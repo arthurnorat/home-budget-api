@@ -1,7 +1,7 @@
 # Orçamento — Contexto do Projeto
 
 ## Objetivo
-Aplicativo de controle de gastos domésticos compartilhado entre dois usuários (um no iPhone, outro no Android).
+Aplicativo de controle de gastos domésticos compartilhado entre dois usuários (um no iPhone, outro no Android — futuramente via app nativo Swift).
 
 ## Perfil do Desenvolvedor
 - Estudante em transição de desenvolvimento mobile (Swift/iOS) para backend
@@ -17,21 +17,16 @@ Aplicativo de controle de gastos domésticos compartilhado entre dois usuários 
 - **Railway** — hospedagem do backend e do banco
 
 ### Frontend Web
-- **React** — interface web para uso e testes
+- **Angular** — interface web para uso e testes
 - **Vercel** — hospedagem do frontend
 
-### Frontend Mobile (futuro)
-- **React Native** — app único para iOS e Android
-
-### Apps Nativos (futuro)
-- **Swift** — app nativo para iOS
-- **Kotlin** — app nativo para Android
+### App iOS (futuro)
+- **Swift** — app nativo para iPhone
 
 ## Ordem de Construção
 1. Backend (Spring Boot + PostgreSQL)
-2. Frontend web (React) — para testar e usar o backend
-3. Frontend mobile (React Native)
-4. Apps nativos (Swift e Kotlin)
+2. Frontend web (Angular) — para testar e usar o backend
+3. App iOS nativo (Swift)
 
 ## MVP — Funcionalidades
 - Registrar gasto: descrição, valor, data e categoria
