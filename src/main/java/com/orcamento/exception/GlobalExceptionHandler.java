@@ -22,4 +22,10 @@ public class GlobalExceptionHandler {
         }
         return Map.of("status", 422, "errors", errors);
     }
+
+    @ExceptionHandler(ExpenseNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, Object> handleNotFound(ExpenseNotFoundException ex) {
+        return Map.of("status", 404, "error", ex.getMessage());
+    }
 }

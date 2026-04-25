@@ -1,5 +1,6 @@
 package com.orcamento.expense;
 
+import com.orcamento.exception.ExpenseNotFoundException;
 import com.orcamento.expense.dto.ExpenseRequest;
 import com.orcamento.expense.dto.ExpenseResponse;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ExpenseService {
@@ -34,5 +36,12 @@ public class ExpenseService {
                 .stream()
                 .map(ExpenseResponse::from)
                 .toList();
+    }
+
+    public void delete(UUID id) {
+        if (!repository.existsById(id)) {
+            throw new ExpenseNotFoundException(id);
+        }
+        repository.deleteById(id);
     }
 }

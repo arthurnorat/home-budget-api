@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.YearMonth;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/expenses")
@@ -36,5 +37,12 @@ public class ExpenseController {
             @DateTimeFormat(pattern = "yyyy-MM") YearMonth month
     ) {
         return service.listByMonth(month != null ? month : YearMonth.now());
+    }
+
+    // DELETE /expenses/{id}  →  remove um gasto
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // retorna 204 em vez de 200
+    public void delete(@PathVariable UUID id) {
+        service.delete(id);
     }
 }
