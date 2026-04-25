@@ -56,4 +56,18 @@ Identificação por usuário poderá ser implementada no futuro.
 - Comentários no código em português são permitidos
 
 ## Status Atual
-Projeto em fase inicial. Backend sendo construído primeiro.
+Backend MVP completo e em produção no Render.
+URL de produção: `https://home-budget-api-wml2.onrender.com`
+
+### Sessão 2026-04-25
+**O que foi feito:**
+- Implementado endpoint `DELETE /expenses/{id}` (204 No Content)
+- Criada `ExpenseNotFoundException` com handler 404 no `GlobalExceptionHandler`
+- Adicionado método `delete(UUID)` no `ExpenseService`
+- Adicionado `DELETE` nos métodos CORS permitidos no `WebConfig`
+- Deploy realizado no Render (auto-deploy via push no GitHub)
+
+**Próxima sessão:**
+- Deploy do frontend Angular no Vercel
+- Responsividade para mobile no frontend
+- Futuramente: endpoint PUT /expenses/{id} para edição de gastos
