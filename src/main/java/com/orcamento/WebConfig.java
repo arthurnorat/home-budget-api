@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                     "http://localhost:4200",                            // Angular local
-                    "https://orcamento-domestico-frontend.vercel.app"  // Vercel (ajustar após deploy)
+                    "https://home-budget-web-ten.vercel.app"            // Vercel
                 )
                 .allowedMethods("GET", "POST", "DELETE")
                 .allowedHeaders("*");
