@@ -67,7 +67,11 @@ URL de produção: `https://home-budget-api-wml2.onrender.com`
 - Adicionado `DELETE` nos métodos CORS permitidos no `WebConfig`
 - Deploy realizado no Render (auto-deploy via push no GitHub)
 
+### Sessão 2026-04-26
+**O que foi feito:**
+- CORS atualizado no `WebConfig.java` para permitir a URL do Vercel: `https://home-budget-web-ten.vercel.app`
+- Redeploy no Render (auto-deploy via push no GitHub)
+
 **Próxima sessão:**
-- Deploy do frontend Angular no Vercel
-- Responsividade para mobile no frontend
-- Futuramente: endpoint PUT /expenses/{id} para edição de gastos
+- Responsividade para mobile no frontend (Angular)
+- Endpoint `PUT /expenses/{id}` para edição de gastos
