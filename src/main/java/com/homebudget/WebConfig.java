@@ -1,4 +1,4 @@
-package com.orcamento;
+package com.homebudget;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

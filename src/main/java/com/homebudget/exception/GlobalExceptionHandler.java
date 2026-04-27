@@ -1,4 +1,4 @@
-package com.orcamento.exception;
+package com.homebudget.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;

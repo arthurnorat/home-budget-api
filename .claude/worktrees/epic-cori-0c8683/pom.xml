@@ -8,10 +8,10 @@
 		<version>3.5.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.homebudget</groupId>
-	<artifactId>home-budget-api</artifactId>
+	<groupId>com.orcamento</groupId>
+	<artifactId>orcamento</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>home-budget-api</name>
+	<name>orcamento</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>

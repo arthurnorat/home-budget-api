@@ -1,4 +1,4 @@
-package com.orcamento.exception;
+package com.homebudget.exception;
 
 import java.util.UUID;
 
