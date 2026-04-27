@@ -73,5 +73,6 @@ URL de produção: `https://home-budget-api-wml2.onrender.com`
 - Redeploy no Render (auto-deploy via push no GitHub)
 
 **Próxima sessão:**
-- Responsividade para mobile no frontend (Angular)
-- Endpoint `PUT /expenses/{id}` para edição de gastos
+1. Renomear o diretório do projeto: `~/Java_Projects/orcamento` → `~/Java_Projects/home-budget-api`
+2. Responsividade para mobile no frontend (Angular)
+3. Endpoint `PUT /expenses/{id}` para edição de gastos
