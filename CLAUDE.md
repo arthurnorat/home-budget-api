@@ -14,7 +14,7 @@ Aplicativo de controle de gastos domésticos compartilhado entre dois usuários 
 ### Backend
 - **Java + Spring Boot** — API REST
 - **PostgreSQL** — banco de dados relacional
-- **Railway** — hospedagem do backend e do banco
+- **Render** — hospedagem do backend e do banco
 
 ### Frontend Web
 - **Angular** — interface web para uso e testes
@@ -72,7 +72,16 @@ URL de produção: `https://home-budget-api-wml2.onrender.com`
 - CORS atualizado no `WebConfig.java` para permitir a URL do Vercel: `https://home-budget-web-ten.vercel.app`
 - Redeploy no Render (auto-deploy via push no GitHub)
 
+### Sessão 2026-04-27
+**O que foi feito:**
+- Diretório renomeado: `~/Java_Projects/orcamento` → `~/Java_Projects/home-budget-api`
+- Pacote Java migrado de `com.orcamento` para `com.homebudget` (commit `9b5ed47`)
+- Repositório GitHub renomeado de `orcamento-domestico` para `home-budget-api`
+- Remote git local atualizado para `https://github.com/arthurnorat/home-budget-api.git`
+- Referências antigas ao nome `orcamento` removidas dos arquivos `.idea/` do IntelliJ
+- Corrigido nome do módulo IntelliJ (`[orcamento]` → `home-budget-api`) editando o cache externo em `~/Library/Caches/JetBrains/IntelliJIdea2026.1/projects/home-budget-api.d764aca5/external_build_system/`
+- Criado `home-budget-api.iml` na raiz do projeto
+
 **Próxima sessão:**
-1. Renomear o diretório do projeto: `~/Java_Projects/orcamento` → `~/Java_Projects/home-budget-api`
-2. Responsividade para mobile no frontend (Angular)
-3. Endpoint `PUT /expenses/{id}` para edição de gastos
+1. Responsividade para mobile no frontend (Angular)
+2. Endpoint `PUT /expenses/{id}` para edição de gastos
