@@ -38,6 +38,16 @@ public class ExpenseService {
                 .toList();
     }
 
+    public ExpenseResponse update(UUID id, ExpenseRequest request) {
+        Expense expense = repository.findById(id)
+                .orElseThrow(() -> new ExpenseNotFoundException(id));
+        expense.setDescription(request.description());
+        expense.setAmount(request.amount());
+        expense.setDate(request.date());
+        expense.setCategory(request.category());
+        return ExpenseResponse.from(repository.save(expense));
+    }
+
     public void delete(UUID id) {
         if (!repository.existsById(id)) {
             throw new ExpenseNotFoundException(id);

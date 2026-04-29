@@ -82,6 +82,17 @@ URL de produção: `https://home-budget-api-wml2.onrender.com`
 - Corrigido nome do módulo IntelliJ (`[orcamento]` → `home-budget-api`) editando o cache externo em `~/Library/Caches/JetBrains/IntelliJIdea2026.1/projects/home-budget-api.d764aca5/external_build_system/`
 - Criado `home-budget-api.iml` na raiz do projeto
 
+### Sessão 2026-04-28
+**O que foi feito:**
+- Backend: implementado endpoint `PUT /expenses/{id}` (200 OK com `ExpenseResponse`)
+- Backend: adicionado método `update(UUID, ExpenseRequest)` no `ExpenseService`
+- Backend: adicionado `PUT` nos métodos CORS permitidos no `WebConfig`
+- Frontend: adicionado `updateExpense()` no `ExpenseService` Angular
+- Frontend: `ExpenseForm` agora suporta modo de edição (input `editingExpense`, outputs `expenseUpdate` e `cancelEdit`)
+- Frontend: `ExpenseTable` ganhou botão de editar (✎) com output `editExpense`
+- Frontend: `App` orquestra o fluxo de edição com signal `editingExpense`
+- Frontend (`home-budget-app`): localizado em `~/Web_Development_Projects/home-budget-app`
+
 **Próxima sessão:**
-1. Responsividade para mobile no frontend (Angular)
-2. Endpoint `PUT /expenses/{id}` para edição de gastos
+- Deploy do frontend no Vercel (push para o repositório do frontend)
+- Testes manuais em produção

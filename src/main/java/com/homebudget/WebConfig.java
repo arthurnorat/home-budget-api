@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
                     "http://localhost:4200",                            // Angular local
                     "https://home-budget-web-ten.vercel.app"            // Vercel
                 )
-                .allowedMethods("GET", "POST", "DELETE")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
     }
 }

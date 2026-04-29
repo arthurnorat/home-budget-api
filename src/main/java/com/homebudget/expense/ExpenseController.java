@@ -39,6 +39,12 @@ public class ExpenseController {
         return service.listByMonth(month != null ? month : YearMonth.now());
     }
 
+    // PUT /expenses/{id}  →  atualiza um gasto existente
+    @PutMapping("/{id}")
+    public ExpenseResponse update(@PathVariable UUID id, @RequestBody @Valid ExpenseRequest request) {
+        return service.update(id, request);
+    }
+
     // DELETE /expenses/{id}  →  remove um gasto
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT) // retorna 204 em vez de 200
