@@ -54,4 +54,27 @@ public class ExpenseService {
         }
         repository.deleteById(id);
     }
+
+    public List<ExpenseResponse> importFixed(YearMonth month) {
+        YearMonth previousMonth = month.minusMonths(1);
+        LocalDate start = previousMonth.atDay(1);
+        LocalDate end = previousMonth.atEndOfMonth();
+
+        List<Expense> fixed = repository.findByCategoryAndDateBetweenOrderByDateDesc(
+                Category.FIXED, start, end);
+
+        LocalDate importDate = month.atDay(1);
+        List<Expense> copies = fixed.stream().map(source -> {
+            Expense copy = new Expense();
+            copy.setDescription(source.getDescription());
+            copy.setAmount(source.getAmount());
+            copy.setDate(importDate);
+            copy.setCategory(Category.FIXED);
+            return copy;
+        }).toList();
+
+        return repository.saveAll(copies).stream()
+                .map(ExpenseResponse::from)
+                .toList();
+    }
 }

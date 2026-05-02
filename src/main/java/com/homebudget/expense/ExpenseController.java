@@ -51,4 +51,12 @@ public class ExpenseController {
     public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
+
+    // POST /expenses/import-fixed?month=YYYY-MM  →  copia gastos fixos do mês anterior
+    @PostMapping("/import-fixed")
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<ExpenseResponse> importFixed(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth month) {
+        return service.importFixed(month);
+    }
 }

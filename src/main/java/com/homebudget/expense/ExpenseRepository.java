@@ -8,7 +8,9 @@ import java.util.UUID;
 
 public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
 
-    // Spring Data JPA gera o SQL automaticamente a partir do nome do método:
     // SELECT * FROM expenses WHERE date BETWEEN :start AND :end ORDER BY date DESC
     List<Expense> findByDateBetweenOrderByDateDesc(LocalDate start, LocalDate end);
+
+    // SELECT * FROM expenses WHERE category = :category AND date BETWEEN :start AND :end ORDER BY date DESC
+    List<Expense> findByCategoryAndDateBetweenOrderByDateDesc(Category category, LocalDate start, LocalDate end);
 }
