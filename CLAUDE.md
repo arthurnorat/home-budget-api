@@ -55,6 +55,61 @@ Identificação por usuário poderá ser implementada no futuro.
 - Commits em inglês
 - Comentários no código em português são permitidos
 
+## Contrato da API
+
+Este arquivo é a fonte de verdade da API. O frontend e os apps mobile importam este CLAUDE.md via `@import` para ter acesso a este contrato sem duplicação.
+
+### URLs
+- **Desenvolvimento:** `http://localhost:8080`
+- **Produção:** `https://home-budget-api-wml2.onrender.com`
+
+### Endpoints
+
+**POST /expenses** — Criar gasto (201)
+```json
+// Request
+{ "description": "Supermercado", "amount": 15000, "date": "2026-04-25", "category": "VARIABLE" }
+
+// Response
+{ "expenseId": "uuid", "description": "Supermercado", "amount": 15000, "date": "2026-04-25", "category": "VARIABLE", "createdAt": "2026-04-25T10:30:00Z" }
+```
+
+**GET /expenses?month=yyyy-MM** — Listar gastos do mês (200)
+```json
+// Response — array de gastos no mesmo formato acima
+```
+
+**PUT /expenses/{id}** — Atualizar gasto (200)
+```json
+// Request — mesmo formato do POST
+// Response — gasto atualizado no mesmo formato acima
+```
+
+**DELETE /expenses/{id}** — Remover gasto (204, sem body)
+
+**POST /expenses/import-fixed?month=yyyy-MM** — Importar fixos do mês anterior (201)
+```json
+// Response — array de gastos criados (cópias dos FIXED do mês anterior, com date = dia 1 do mês solicitado)
+```
+
+### Campos e tipos
+| Campo | Tipo | Observação |
+|-------|------|------------|
+| `expenseId` | UUID (string) | Gerado automaticamente |
+| `description` | string | Obrigatório, mínimo 1 caractere |
+| `amount` | integer | Em **centavos** (R$ 1,00 = 100) |
+| `date` | string ISO 8601 | Formato `YYYY-MM-DD` |
+| `category` | string enum | `"FIXED"` ou `"VARIABLE"` |
+| `createdAt` | string ISO 8601 | Timestamp UTC, gerado automaticamente |
+
+### CORS
+Origens permitidas atualmente: `http://localhost:4200`, `https://home-budget-web-ten.vercel.app`
+
+Para adicionar um app mobile: inserir a origem (ou scheme nativo, ex: `capacitor://localhost`) em `WebConfig.java`.
+
+### Autenticação
+Nenhuma no MVP. O app é de uso privado.
+
 ## Status Atual
 Backend MVP completo e em produção no Render.
 URL de produção: `https://home-budget-api-wml2.onrender.com`
@@ -96,3 +151,14 @@ URL de produção: `https://home-budget-api-wml2.onrender.com`
 **Próxima sessão:**
 - Deploy do frontend no Vercel (push para o repositório do frontend)
 - Testes manuais em produção
+
+### Sessão 2026-05-02
+**O que foi feito:**
+- Frontend: adicionado filtro de categoria na `ExpenseTable` (Variável / Fixo / Todos) com padrão "Variável"
+- Frontend: coluna de categoria removida da tabela (redundante com o filtro)
+- Frontend: ajustes de responsividade mobile (padding, font-size, text-overflow)
+- Backend: implementado endpoint `POST /expenses/import-fixed?month=yyyy-MM`
+- Backend: adicionado `findByCategoryAndDateBetweenOrderByDateDesc` no `ExpenseRepository`
+- Backend: adicionado método `importFixed(YearMonth)` no `ExpenseService`
+- Frontend: adicionado botão "Importar" na filter bar que copia fixos do mês anterior
+- CLAUDE.md do backend expandido com contrato completo da API (para uso pelos projetos mobile via `@import`)
