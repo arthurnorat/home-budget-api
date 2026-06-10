@@ -92,6 +92,21 @@ Este arquivo é a fonte de verdade da API. O frontend e os apps mobile importam 
 // Response — array de gastos criados (cópias dos FIXED do mês anterior, com date = dia 1 do mês solicitado)
 ```
 
+**GET /income?month=yyyy-MM** — Buscar entrada do mês (200)
+```json
+// Response
+{ "month": "2026-06", "amount": 500000 }
+// Retorna amount=0 se nenhuma entrada foi registrada para o mês
+```
+
+**PUT /income?month=yyyy-MM** — Salvar ou atualizar entrada do mês (200)
+```json
+// Request
+{ "amount": 500000 }
+// Response
+{ "month": "2026-06", "amount": 500000 }
+```
+
 ### Campos e tipos
 | Campo | Tipo | Observação |
 |-------|------|------------|
@@ -111,54 +126,6 @@ Para adicionar um app mobile: inserir a origem (ou scheme nativo, ex: `capacitor
 Nenhuma no MVP. O app é de uso privado.
 
 ## Status Atual
-Backend MVP completo e em produção no Render.
-URL de produção: `https://home-budget-api-wml2.onrender.com`
-
-### Sessão 2026-04-25
-**O que foi feito:**
-- Implementado endpoint `DELETE /expenses/{id}` (204 No Content)
-- Criada `ExpenseNotFoundException` com handler 404 no `GlobalExceptionHandler`
-- Adicionado método `delete(UUID)` no `ExpenseService`
-- Adicionado `DELETE` nos métodos CORS permitidos no `WebConfig`
-- Deploy realizado no Render (auto-deploy via push no GitHub)
-
-### Sessão 2026-04-26
-**O que foi feito:**
-- CORS atualizado no `WebConfig.java` para permitir a URL do Vercel: `https://home-budget-web-ten.vercel.app`
-- Redeploy no Render (auto-deploy via push no GitHub)
-
-### Sessão 2026-04-27
-**O que foi feito:**
-- Diretório renomeado: `~/Java_Projects/orcamento` → `~/Java_Projects/home-budget-api`
-- Pacote Java migrado de `com.orcamento` para `com.homebudget` (commit `9b5ed47`)
-- Repositório GitHub renomeado de `orcamento-domestico` para `home-budget-api`
-- Remote git local atualizado para `https://github.com/arthurnorat/home-budget-api.git`
-- Referências antigas ao nome `orcamento` removidas dos arquivos `.idea/` do IntelliJ
-- Corrigido nome do módulo IntelliJ (`[orcamento]` → `home-budget-api`) editando o cache externo em `~/Library/Caches/JetBrains/IntelliJIdea2026.1/projects/home-budget-api.d764aca5/external_build_system/`
-- Criado `home-budget-api.iml` na raiz do projeto
-
-### Sessão 2026-04-28
-**O que foi feito:**
-- Backend: implementado endpoint `PUT /expenses/{id}` (200 OK com `ExpenseResponse`)
-- Backend: adicionado método `update(UUID, ExpenseRequest)` no `ExpenseService`
-- Backend: adicionado `PUT` nos métodos CORS permitidos no `WebConfig`
-- Frontend: adicionado `updateExpense()` no `ExpenseService` Angular
-- Frontend: `ExpenseForm` agora suporta modo de edição (input `editingExpense`, outputs `expenseUpdate` e `cancelEdit`)
-- Frontend: `ExpenseTable` ganhou botão de editar (✎) com output `editExpense`
-- Frontend: `App` orquestra o fluxo de edição com signal `editingExpense`
-- Frontend (`home-budget-app`): localizado em `~/Web_Development_Projects/home-budget-app`
-
-**Próxima sessão:**
-- Deploy do frontend no Vercel (push para o repositório do frontend)
-- Testes manuais em produção
-
-### Sessão 2026-05-02
-**O que foi feito:**
-- Frontend: adicionado filtro de categoria na `ExpenseTable` (Variável / Fixo / Todos) com padrão "Variável"
-- Frontend: coluna de categoria removida da tabela (redundante com o filtro)
-- Frontend: ajustes de responsividade mobile (padding, font-size, text-overflow)
-- Backend: implementado endpoint `POST /expenses/import-fixed?month=yyyy-MM`
-- Backend: adicionado `findByCategoryAndDateBetweenOrderByDateDesc` no `ExpenseRepository`
-- Backend: adicionado método `importFixed(YearMonth)` no `ExpenseService`
-- Frontend: adicionado botão "Importar" na filter bar que copia fixos do mês anterior
-- CLAUDE.md do backend expandido com contrato completo da API (para uso pelos projetos mobile via `@import`)
+Backend completo e em produção no Render. Frontend em produção no Vercel.
+- Backend: `https://home-budget-api-wml2.onrender.com`
+- Frontend: `https://home-budget-web-ten.vercel.app`
