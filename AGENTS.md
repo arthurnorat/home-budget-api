@@ -55,6 +55,11 @@ Identificação por usuário poderá ser implementada no futuro.
 - Commits em inglês
 - Comentários no código em português são permitidos
 
+## Fluxo de Alterações
+- Antes de qualquer edição de arquivo, o agente deve apresentar o plano ou diff proposto e aguardar autorização explícita do usuário.
+- Não aplicar patches, criar arquivos, remover arquivos ou alterar documentação/código sem aprovação prévia.
+- Após autorização, manter as alterações no menor escopo necessário para atender ao pedido.
+
 ## Contrato da API
 
 Este arquivo é a fonte de verdade da API. O frontend e os apps mobile importam este AGENTS.md via `@import` para ter acesso a este contrato sem duplicação.
