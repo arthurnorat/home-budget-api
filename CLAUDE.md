@@ -51,9 +51,8 @@ Identificação por usuário poderá ser implementada no futuro.
 ## Convenções
 - Valores monetários armazenados em centavos (integer)
 - Datas armazenadas em ISO 8601, exibidas em DD/MM/YYYY
-- Código e variáveis em inglês
+- Todo o código em inglês: variáveis, nomes de classes/métodos e comentários
 - Commits em inglês
-- Comentários no código em português são permitidos
 
 ## Contrato da API
 
