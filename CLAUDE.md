@@ -54,6 +54,32 @@ Identificação por usuário poderá ser implementada no futuro.
 - Todo o código em inglês: variáveis, nomes de classes/métodos e comentários
 - Commits em inglês
 
+## Architecture
+- Controllers (`ExpenseController`, `MonthlyIncomeController`) só lidam com HTTP: validam entrada, chamam os services e devolvem DTOs. Nunca contêm lógica de negócio.
+- Lógica de negócio vive só nos services (`ExpenseService`, `MonthlyIncomeService`).
+- Acesso a dados só via repositories (`ExpenseRepository`, `MonthlyIncomeRepository`), usando Spring Data JPA.
+- Entidades (`Expense`, `MonthlyIncome`) e DTOs (`expense/dto`, `income/dto`) ficam separados — os controllers nunca expõem entidades diretamente nas respostas.
+- Exceções de domínio (ex.: `ExpenseNotFoundException`) são mapeadas para respostas HTTP num único `GlobalExceptionHandler` (`@RestControllerAdvice`), em vez de tratadas em cada controller.
+- Pacotes organizados por feature (`expense`, `income`), não por camada, com um pacote `exception` compartilhado.
+
+## Out of scope
+Além dos defaults do CLAUDE.md global, não há restrição adicional específica deste projeto no momento.
+
+## Infrastructure
+- **Render** (backend) — `https://home-budget-api-wml2.onrender.com`
+- **Neon** (Postgres) — variáveis de ambiente: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`
+- `SPRING_PROFILES_ACTIVE=prod` — ativa `application-prod.properties`
+- **Vercel** (frontend) — `https://home-budget-web-ten.vercel.app`
+- **cron-job.org** — ping externo temporário de keep-warm (a cada 10 min), ver [ADR 0004](docs/adr/0004-reativar-keep-warm-temporario-a-cada-10-min.md); será substituído pelo liveness probe do [ADR 0005](docs/adr/0005-liveness-probe-com-actuator-para-keep-warm-seguro.md)
+
+## Status
+Passo atual: alinhamento do projeto às regras do CLAUDE.md global — reorganização de `docs/steps/`, seções per-project e limpeza de resíduos no repositório.
+Próximo passo planejado: liveness probe via Spring Boot Actuator ([ADR 0005](docs/adr/0005-liveness-probe-com-actuator-para-keep-warm-seguro.md)), para manter o Render quente sem precisar acordar o Neon a cada ping.
+
+Backend completo e em produção no Render. Frontend em produção no Vercel.
+- Backend: `https://home-budget-api-wml2.onrender.com`
+- Frontend: `https://home-budget-web-ten.vercel.app`
+
 ## Contrato da API
 
 Este arquivo é a fonte de verdade da API. O frontend e os apps mobile importam este CLAUDE.md via `@import` para ter acesso a este contrato sem duplicação.
@@ -123,8 +149,3 @@ Para adicionar um app mobile: inserir a origem (ou scheme nativo, ex: `capacitor
 
 ### Autenticação
 Nenhuma no MVP. O app é de uso privado.
-
-## Status Atual
-Backend completo e em produção no Render. Frontend em produção no Vercel.
-- Backend: `https://home-budget-api-wml2.onrender.com`
-- Frontend: `https://home-budget-web-ten.vercel.app`
