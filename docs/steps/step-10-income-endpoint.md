@@ -13,4 +13,4 @@
 - `e3a5722` — docs: simplify CLAUDE.md — remove session history, keep API contract
 
 ## Observação
-Esta foi a sessão em que o histórico textual de sessões deixou de existir no `CLAUDE.md`. Os arquivos em `docs/sessions/` (incluindo este) recuperam justamente essas informações a partir do git, já que elas não estavam mais presentes em nenhum arquivo do repositório.
+Esta foi a sessão em que o histórico textual de sessões deixou de existir no `CLAUDE.md`. Os arquivos em `docs/steps/` (incluindo este) recuperam justamente essas informações a partir do git, já que elas não estavam mais presentes em nenhum arquivo do repositório.
