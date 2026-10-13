@@ -34,3 +34,10 @@ build/
 
 ### macOS ###
 .DS_Store
+
+### Secrets ###
+.env*
+!.env.example
+
+### Claude Code worktrees ###
+.claude/worktrees/
