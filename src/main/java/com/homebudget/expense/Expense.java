@@ -23,7 +23,7 @@ public class Expense {
 
     @NotNull
     @Positive
-    private Integer amount; // armazenado em centavos (ex: R$ 1.500,00 = 150000)
+    private Integer amount; // stored in cents (e.g.: R$ 1,500.00 = 150000)
 
     @NotNull
     private LocalDate date;

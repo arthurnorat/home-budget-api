@@ -15,7 +15,7 @@ public class ExpenseService {
 
     private final ExpenseRepository repository;
 
-    // Injeção de dependência via construtor (preferível ao @Autowired)
+    // Constructor dependency injection (preferable to @Autowired)
     public ExpenseService(ExpenseRepository repository) {
         this.repository = repository;
     }

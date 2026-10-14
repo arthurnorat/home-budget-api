@@ -10,10 +10,10 @@ import jakarta.persistence.Table;
 public class MonthlyIncome {
 
     @Id
-    private String month; // formato yyyy-MM
+    private String month; // format yyyy-MM
 
     @Column(nullable = false)
-    private Integer amount; // em centavos
+    private Integer amount; // in cents
 
     public MonthlyIncome() {}
 

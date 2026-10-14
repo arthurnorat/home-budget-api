@@ -4,5 +4,5 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public record IncomeRequest(
-        @NotNull @PositiveOrZero Integer amount // em centavos
+        @NotNull @PositiveOrZero Integer amount // in cents
 ) {}

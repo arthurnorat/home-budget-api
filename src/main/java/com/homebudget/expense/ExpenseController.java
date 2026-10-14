@@ -21,16 +21,16 @@ public class ExpenseController {
         this.service = service;
     }
 
-    // POST /expenses  →  cria um novo gasto
-    // @Valid aciona as validações definidas no ExpenseRequest (@NotBlank, @NotNull, etc.)
+    // POST /expenses  →  creates a new expense
+    // @Valid triggers the validations defined in ExpenseRequest (@NotBlank, @NotNull, etc.)
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // retorna 201 em vez de 200
+    @ResponseStatus(HttpStatus.CREATED) // returns 201 instead of 200
     public ExpenseResponse create(@RequestBody @Valid ExpenseRequest request) {
         return service.create(request);
     }
 
-    // GET /expenses           →  lista gastos do mês atual
-    // GET /expenses?month=2026-02  →  lista gastos de fevereiro de 2026
+    // GET /expenses           →  lists expenses for the current month
+    // GET /expenses?month=2026-02  →  lists expenses for February 2026
     @GetMapping
     public List<ExpenseResponse> list(
             @RequestParam(required = false)
@@ -39,20 +39,20 @@ public class ExpenseController {
         return service.listByMonth(month != null ? month : YearMonth.now());
     }
 
-    // PUT /expenses/{id}  →  atualiza um gasto existente
+    // PUT /expenses/{id}  →  updates an existing expense
     @PutMapping("/{id}")
     public ExpenseResponse update(@PathVariable UUID id, @RequestBody @Valid ExpenseRequest request) {
         return service.update(id, request);
     }
 
-    // DELETE /expenses/{id}  →  remove um gasto
+    // DELETE /expenses/{id}  →  deletes an expense
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT) // retorna 204 em vez de 200
+    @ResponseStatus(HttpStatus.NO_CONTENT) // returns 204 instead of 200
     public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
 
-    // POST /expenses/import-fixed?month=YYYY-MM  →  copia gastos fixos do mês anterior
+    // POST /expenses/import-fixed?month=YYYY-MM  →  copies fixed expenses from the previous month
     @PostMapping("/import-fixed")
     @ResponseStatus(HttpStatus.CREATED)
     public List<ExpenseResponse> importFixed(

@@ -10,12 +10,12 @@ import java.util.UUID;
 public record ExpenseResponse(
         UUID expenseId,
         String description,
-        Integer amount,   // em centavos
+        Integer amount,   // in cents
         LocalDate date,
         Category category,
         Instant createdAt
 ) {
-    // Método factory: converte uma entidade Expense em ExpenseResponse
+    // Factory method: converts an Expense entity into an ExpenseResponse
     public static ExpenseResponse from(Expense expense) {
         return new ExpenseResponse(
                 expense.getExpenseId(),
