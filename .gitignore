@@ -36,7 +36,6 @@ build/
 
 ### Secrets ###
 .env*
-!.env.example
 
 ### Claude Code worktrees ###
 .claude/worktrees/
