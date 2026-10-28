@@ -70,11 +70,12 @@ Além dos defaults do CLAUDE.md global, não há restrição adicional específi
 - **Neon** (Postgres) — variáveis de ambiente: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`
 - `SPRING_PROFILES_ACTIVE=prod` — ativa `application-prod.properties`
 - **Vercel** (frontend) — `https://home-budget-web-ten.vercel.app`
-- **cron-job.org** — ping externo temporário de keep-warm (a cada 10 min), ver [ADR 0004](docs/adr/0004-reativar-keep-warm-temporario-a-cada-10-min.md); será substituído pelo liveness probe do [ADR 0005](docs/adr/0005-liveness-probe-com-actuator-para-keep-warm-seguro.md)
+- **cron-job.org** — ping externo de keep-warm (a cada 10 min), ver [step-12](docs/steps/step-12-keep-warm-workflow.md); fica ativo até a migração para Firestore + Cloud Run
 
 ## Status
-Passo atual: alinhamento do projeto às regras do CLAUDE.md global — reorganização de `docs/steps/`, seções per-project e limpeza de resíduos no repositório.
-Próximo passo planejado: liveness probe via Spring Boot Actuator ([ADR 0005](docs/adr/0005-liveness-probe-com-actuator-para-keep-warm-seguro.md)), para manter o Render quente sem precisar acordar o Neon a cada ping.
+Passo atual: planejamento da migração para Firestore (banco) + Cloud Run (hospedagem), no Google Cloud.
+Alinhamento ao CLAUDE.md global: `docs/steps/` reescrito e `docs/adr/` removida. Pausado: a reescrita deste arquivo em inglês, a atualização do README e as limpezas de código ficam para depois da migração, porque dependem dela.
+Tarefas canceladas: liveness probe com Actuator, Postgres em servidor doméstico, monitoramento de cota do Neon e restrição do ping por horário (motivos no [step-12](docs/steps/step-12-keep-warm-workflow.md)).
 
 Backend completo e em produção no Render. Frontend em produção no Vercel.
 - Backend: `https://home-budget-api-wml2.onrender.com`
