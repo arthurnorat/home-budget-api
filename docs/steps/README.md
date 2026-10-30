@@ -16,3 +16,4 @@ verificar. Os steps que tomaram uma decisão arquitetural têm uma seção ADR.
 11. [step-11 — README atualizado](step-11-readme-update.md)
 12. [step-12 — Keep-warm: evitar o cold start sem estourar a cota do Neon](step-12-keep-warm-workflow.md)
 13. [step-13 — Infraestrutura no Google Cloud: Firestore e Cloud Run](step-13-google-cloud-setup.md)
+14. [step-14 — Persistência no Firestore](step-14-firestore-persistence.md)
