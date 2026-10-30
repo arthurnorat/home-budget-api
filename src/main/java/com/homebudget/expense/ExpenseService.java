@@ -22,10 +22,7 @@ public class ExpenseService {
 
     public ExpenseResponse create(ExpenseRequest request) {
         Expense expense = new Expense();
-        expense.setDescription(request.description());
-        expense.setAmount(request.amount());
-        expense.setDate(request.date());
-        expense.setCategory(request.category());
+        applyRequest(expense, request);
         return ExpenseResponse.from(repository.save(expense));
     }
 
@@ -41,10 +38,7 @@ public class ExpenseService {
     public ExpenseResponse update(UUID id, ExpenseRequest request) {
         Expense expense = repository.findById(id)
                 .orElseThrow(() -> new ExpenseNotFoundException(id));
-        expense.setDescription(request.description());
-        expense.setAmount(request.amount());
-        expense.setDate(request.date());
-        expense.setCategory(request.category());
+        applyRequest(expense, request);
         return ExpenseResponse.from(repository.save(expense));
     }
 
@@ -60,8 +54,10 @@ public class ExpenseService {
         LocalDate start = previousMonth.atDay(1);
         LocalDate end = previousMonth.atEndOfMonth();
 
-        List<Expense> fixed = repository.findByCategoryAndDateBetweenOrderByDateDesc(
-                Category.FIXED, start, end);
+        List<Expense> fixed = repository.findByDateBetweenOrderByDateDesc(start, end)
+                .stream()
+                .filter(expense -> expense.getCategory() == Category.FIXED)
+                .toList();
 
         LocalDate importDate = month.atDay(1);
         List<Expense> copies = fixed.stream().map(source -> {
@@ -76,5 +72,12 @@ public class ExpenseService {
         return repository.saveAll(copies).stream()
                 .map(ExpenseResponse::from)
                 .toList();
+    }
+
+    private void applyRequest(Expense expense, ExpenseRequest request) {
+        expense.setDescription(request.description());
+        expense.setAmount(request.amount());
+        expense.setDate(request.date());
+        expense.setCategory(request.category());
     }
 }

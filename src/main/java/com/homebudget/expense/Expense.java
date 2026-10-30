@@ -1,39 +1,17 @@
 package com.homebudget.expense;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Entity
-@Table(name = "expenses")
 public class Expense {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "expense_id")
     private UUID expenseId;
-
-    @NotBlank
     private String description;
-
-    @NotNull
-    @Positive
     private Integer amount; // stored in cents (e.g.: R$ 1,500.00 = 150000)
-
-    @NotNull
     private LocalDate date;
-
-    @Enumerated(EnumType.STRING)
-    @NotNull
     private Category category;
-
-    @Column(name = "created_at", updatable = false)
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
 
     public UUID getExpenseId() { return expenseId; }
     public void setExpenseId(UUID expenseId) { this.expenseId = expenseId; }
@@ -51,4 +29,5 @@ public class Expense {
     public void setCategory(Category category) { this.category = category; }
 
     public Instant getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 }
