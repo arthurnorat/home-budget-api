@@ -1,18 +1,8 @@
 package com.homebudget.income;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "monthly_income")
 public class MonthlyIncome {
 
-    @Id
     private String month; // format yyyy-MM
-
-    @Column(nullable = false)
     private Integer amount; // in cents
 
     public MonthlyIncome() {}
