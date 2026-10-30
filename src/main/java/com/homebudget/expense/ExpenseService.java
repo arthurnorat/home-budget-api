@@ -1,6 +1,5 @@
 package com.homebudget.expense;
 
-import com.homebudget.exception.ExpenseNotFoundException;
 import com.homebudget.expense.dto.ExpenseRequest;
 import com.homebudget.expense.dto.ExpenseResponse;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ public class ExpenseService {
 
     private final ExpenseRepository repository;
 
-    // Constructor dependency injection (preferable to @Autowired)
     public ExpenseService(ExpenseRepository repository) {
         this.repository = repository;
     }
@@ -49,6 +47,7 @@ public class ExpenseService {
         repository.deleteById(id);
     }
 
+    // Copies the previous month's FIXED expenses, dated the 1st of the requested month
     public List<ExpenseResponse> importFixed(YearMonth month) {
         YearMonth previousMonth = month.minusMonths(1);
         LocalDate start = previousMonth.atDay(1);

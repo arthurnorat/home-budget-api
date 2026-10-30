@@ -1,4 +1,4 @@
-package com.homebudget.exception;
+package com.homebudget.expense;
 
 import java.util.UUID;
 

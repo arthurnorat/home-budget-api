@@ -15,7 +15,6 @@ public record ExpenseResponse(
         Category category,
         Instant createdAt
 ) {
-    // Factory method: converts an Expense entity into an ExpenseResponse
     public static ExpenseResponse from(Expense expense) {
         return new ExpenseResponse(
                 expense.getExpenseId(),
