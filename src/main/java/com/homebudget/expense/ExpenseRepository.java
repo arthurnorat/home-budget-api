@@ -6,7 +6,6 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
-import com.google.cloud.firestore.WriteBatch;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
@@ -35,17 +34,6 @@ public class ExpenseRepository {
         prepareForSave(expense);
         await(document(expense.getExpenseId()).set(toDocument(expense)), "save expense");
         return expense;
-    }
-
-    // One batch = one atomic write (Firestore allows up to 500 writes per batch)
-    public List<Expense> saveAll(List<Expense> expenses) {
-        WriteBatch batch = firestore.batch();
-        for (Expense expense : expenses) {
-            prepareForSave(expense);
-            batch.set(document(expense.getExpenseId()), toDocument(expense));
-        }
-        await(batch.commit(), "save expenses");
-        return expenses;
     }
 
     public Optional<Expense> findById(UUID id) {

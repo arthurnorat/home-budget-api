@@ -47,32 +47,6 @@ public class ExpenseService {
         repository.deleteById(id);
     }
 
-    // Copies the previous month's FIXED expenses, dated the 1st of the requested month
-    public List<ExpenseResponse> importFixed(YearMonth month) {
-        YearMonth previousMonth = month.minusMonths(1);
-        LocalDate start = previousMonth.atDay(1);
-        LocalDate end = previousMonth.atEndOfMonth();
-
-        List<Expense> fixed = repository.findByDateBetweenOrderByDateDesc(start, end)
-                .stream()
-                .filter(expense -> expense.getCategory() == Category.FIXED)
-                .toList();
-
-        LocalDate importDate = month.atDay(1);
-        List<Expense> copies = fixed.stream().map(source -> {
-            Expense copy = new Expense();
-            copy.setDescription(source.getDescription());
-            copy.setAmount(source.getAmount());
-            copy.setDate(importDate);
-            copy.setCategory(Category.FIXED);
-            return copy;
-        }).toList();
-
-        return repository.saveAll(copies).stream()
-                .map(ExpenseResponse::from)
-                .toList();
-    }
-
     private void applyRequest(Expense expense, ExpenseRequest request) {
         expense.setDescription(request.description());
         expense.setAmount(request.amount());
