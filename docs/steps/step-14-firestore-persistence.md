@@ -27,6 +27,9 @@ prática da separação em camadas.
 | `createdAt` (criação) | `Timestamp` do Firestore | É um instante exato, em UTC. O Firestore guarda com precisão de microssegundos, então o `Instant` é truncado a micros antes de salvar, para o valor devolvido na criação ser igual ao lido depois. |
 
 ### Consulta do `import-fixed`
+> **Nota:** o `import-fixed` foi removido no [step-15](step-15-remove-import-fixed.md). A decisão abaixo era
+> válida quando este step foi feito e fica como registro de como a consulta foi pensada.
+
 | Opção | Vantagens | Desvantagens |
 |---|---|---|
 | **Buscar os gastos do mês anterior e filtrar `FIXED` em memória** | Sem índice composto; emulador e produção se comportam igual | Lê também os gastos variáveis do mês (poucas dezenas, irrelevante) |
@@ -61,7 +64,8 @@ uma infraestrutura ainda não publicada.
 **Consequências.**
 - Bom: buscar, atualizar e apagar por id vão direto ao documento; um mês nunca tem duas entradas, por construção.
 - Ruim: regras que precisem combinar vários campos numa consulta vão exigir índices compostos ou filtro em memória;
-  não existem as transações SQL de antes (o `import-fixed` usa um lote atômico, que basta aqui); um documento
+  não existem as transações SQL de antes (o `import-fixed` usava um lote atômico, que bastava; ele foi removido
+  no [step-15](step-15-remove-import-fixed.md)); um documento
   editado à mão sem algum campo quebra a leitura dele.
 - Reverter custa: reescrever os dois repositories e migrar os dados para outro modelo.
 
@@ -102,8 +106,8 @@ engoli-lo.
 ### `ExpenseRepository`
 - `save`: na primeira gravação gera o UUID e o `createdAt`; depois grava o documento com `set`, que cria ou
   substitui.
-- `saveAll`: usa um `WriteBatch`, que grava todos os documentos numa operação **atômica** (todos ou nenhum; até
-  500 por lote).
+- `saveAll`: usava um `WriteBatch`, que grava todos os documentos numa operação **atômica** (todos ou nenhum; até
+  500 por lote). *Removido no [step-15](step-15-remove-import-fixed.md), junto com o `import-fixed`, único que o usava.*
 - `findByDateBetweenOrderByDateDesc`:
   ```java
   collection()
@@ -116,8 +120,8 @@ engoli-lo.
 
 ### `ExpenseService`
 `create` e `update` usam o método privado `applyRequest`, que copia os quatro campos do request para a entidade.
-O `importFixed` pega os gastos do mês anterior, filtra `Category.FIXED` e grava as cópias com data no dia 1 do mês
-pedido.
+O `importFixed` pegava os gastos do mês anterior, filtrava `Category.FIXED` e gravava as cópias com data no dia 1
+do mês pedido. *Removido no [step-15](step-15-remove-import-fixed.md).*
 
 ### `MonthlyIncomeRepository`
 O mês é o caminho do documento (`monthly_income/2026-10`). `findById` lê o documento; `save` grava
@@ -144,16 +148,18 @@ as variáveis `FIRESTORE_EMULATOR_HOST=localhost:8086` e `GOOGLE_CLOUD_PROJECT=h
 | Entrada inválida | descrição vazia ou valor negativo | `422` com os campos em `errors` |
 | Id inexistente | `PUT` ou `DELETE` | `404` |
 | Apagar | `DELETE /expenses/{id}` | `204`; repetido, `404` |
-| Importar fixos | `POST /expenses/import-fixed?month=2026-12` | `201`, só `FIXED`, data `2026-12-01`, ids novos |
-| Virada de ano | `import-fixed?month=2027-01` | busca em dezembro de 2026 |
-| Mês anterior vazio | `import-fixed` | `201` e `[]` |
+| Importar fixos *(removido no [step-15](step-15-remove-import-fixed.md))* | `POST /expenses/import-fixed?month=2026-12` | `201`, só `FIXED`, data `2026-12-01`, ids novos |
+| Virada de ano *(removido)* | `import-fixed?month=2027-01` | busca em dezembro de 2026 |
+| Mês anterior vazio *(removido)* | `import-fixed` | `201` e `[]` |
 | Entrada mensal | `GET /income` sem registro; `PUT` duas vezes | `amount` 0; depois o último valor, sem duplicar |
 | Entrada inválida | `amount` negativo; `month=outubro` | `422`; `400` |
 | Persistência | reiniciar a API | dados mantidos (ficam no emulador); parar o emulador apaga tudo |
 
-Não verificado neste step: a resposta `503` com o Firestore fora do ar, e a construção da imagem Docker (feita na
-nuvem no step-15).
+Não verificado neste step: a resposta `503` com o Firestore fora do ar (verificada no
+[step-15](step-15-remove-import-fixed.md)) e a construção da imagem de execução, que será feita na nuvem no
+step-16, pelos buildpacks do Google.
 
 ## Conexão com o próximo passo
-Com a API funcionando sobre o Firestore, o step-15 publica a aplicação no **Cloud Run**, usando a conta de serviço
+Com a API funcionando sobre o Firestore, o [step-15](step-15-remove-import-fixed.md) retira o `import-fixed`, para
+publicar um código mais enxuto. Depois, o step-16 publica a aplicação no **Cloud Run**, usando a conta de serviço
 `home-budget-api-run` e o banco real em São Paulo.
