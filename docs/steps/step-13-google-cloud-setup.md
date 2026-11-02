@@ -4,7 +4,7 @@
 Preparar a base em nuvem da API: um projeto no Google Cloud com faturamento e alerta de orçamento, um banco
 **Firestore** em São Paulo, uma **conta de serviço** para a API rodar no **Cloud Run** e o **emulador do
 Firestore** para desenvolver localmente. Este step não altera o código da API; o código vem no
-[step-14](step-14-firestore-persistence.md) e a publicação no step-15.
+[step-14](step-14-firestore-persistence.md) e a publicação no [step-16](step-16-cloud-run-deploy.md).
 
 ## Decisões
 
@@ -21,7 +21,7 @@ plano gratuito dele são justamente as que mais atrapalham num app de uso espor�
 ### Hospedagem da API
 | Opção | Vantagens | Desvantagens |
 |---|---|---|
-| **Cloud Run** | Roda a mesma imagem Docker; escala a zero e só cobra durante as requisições; integra-se ao Firestore por identidade de serviço, sem chaves | Cold start da JVM na primeira requisição após inatividade (alguns segundos); exige conta de faturamento ativa |
+| **Cloud Run** | Roda imagens de contêiner, que o próprio Google pode gerar a partir do código ([step-16](step-16-cloud-run-deploy.md)); escala a zero e só cobra durante as requisições; integra-se ao Firestore por identidade de serviço, sem chaves | Cold start da JVM na primeira requisição após inatividade (alguns segundos); exige conta de faturamento ativa |
 | Cloud Run com `min-instances=1` | Sem cold start | Instância sempre ligada: tem custo mesmo sem tráfego |
 | Render | Deploy automático a cada push; plano gratuito simples | O serviço gratuito hiberna após cerca de 15 minutos sem tráfego; fica fora do restante da infraestrutura Google |
 
@@ -48,8 +48,8 @@ alterada depois de criada**.
 eu aprender Google Cloud. O uso é esporádico: ficar horas sem nenhuma requisição é normal.
 
 **Decisão.** Firestore (edição Standard, modo nativo, banco `(default)`, `southamerica-east1`, regras de
-segurança restritivas) como banco e Cloud Run (`min-instances=0`) como hospedagem, com a imagem Docker do
-projeto. Os endpoints da API não mudam para os clientes. As regras restritivas valem para acesso direto de
+segurança restritivas) como banco e Cloud Run (`min-instances=0`) como hospedagem, com uma imagem de
+contêiner gerada a partir do código (a forma exata de gerá-la foi decidida no [step-16](step-16-cloud-run-deploy.md)). Os endpoints da API não mudam para os clientes. As regras restritivas valem para acesso direto de
 navegador ou celular; a API acessa pelo servidor, com a identidade da conta de serviço, e não é afetada por elas.
 
 **Consequências.**
@@ -58,9 +58,9 @@ navegador ou celular; a API acessa pelo servidor, com a identidade da conta de s
   persistência precisa ser escrita para o Firestore ([step-14](step-14-firestore-persistence.md)); cold start da
   JVM; dependência do Google.
 - Um orçamento do Google **só avisa**, não bloqueia gastos. O limite real vem de `--max-instances` no
-  Cloud Run (step-15) e de manter `min-instances=0`.
+  Cloud Run ([step-16](step-16-cloud-run-deploy.md)) e de manter `min-instances=0`.
 - Reverter custa: trocar de banco exige reescrever os repositories e mover os dados; trocar de hospedagem exige só
-  reconfigurar a publicação, porque a imagem Docker é portátil.
+  reconfigurar a publicação, porque uma imagem de contêiner é portátil.
 
 ## O que foi construído
 

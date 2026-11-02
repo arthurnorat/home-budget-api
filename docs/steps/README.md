@@ -18,3 +18,4 @@ verificar. Os steps que tomaram uma decisão arquitetural têm uma seção ADR.
 13. [step-13 — Infraestrutura no Google Cloud: Firestore e Cloud Run](step-13-google-cloud-setup.md)
 14. [step-14 — Persistência no Firestore](step-14-firestore-persistence.md)
 15. [step-15 — Remover o "importar fixos"](step-15-remove-import-fixed.md)
+16. [step-16 — Deploy no Cloud Run pelos buildpacks](step-16-cloud-run-deploy.md)
