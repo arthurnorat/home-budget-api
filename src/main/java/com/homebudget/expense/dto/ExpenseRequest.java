@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
 
-// record = immutable data class (no setters, constructor generated automatically)
 public record ExpenseRequest(
         @NotBlank String description,
         @NotNull @Positive Integer amount, // in cents

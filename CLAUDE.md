@@ -113,11 +113,6 @@ Este arquivo é a fonte de verdade da API. O frontend e os apps mobile importam 
 
 **DELETE /expenses/{id}** — Remover gasto (204, sem body)
 
-**POST /expenses/import-fixed?month=yyyy-MM** — Importar fixos do mês anterior (201)
-```json
-// Response — array de gastos criados (cópias dos FIXED do mês anterior, com date = dia 1 do mês solicitado)
-```
-
 **GET /income?month=yyyy-MM** — Buscar entrada do mês (200)
 ```json
 // Response

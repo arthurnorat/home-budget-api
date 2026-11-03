@@ -18,7 +18,6 @@ public class MonthlyIncomeController {
         this.service = service;
     }
 
-    // GET /income?month=yyyy-MM  →  returns the month's income (0 if not registered)
     @GetMapping
     public IncomeResponse get(
             @RequestParam(required = false)
@@ -27,7 +26,6 @@ public class MonthlyIncomeController {
         return service.get(month != null ? month : YearMonth.now());
     }
 
-    // PUT /income?month=yyyy-MM  →  saves or updates the month's income
     @PutMapping
     public IncomeResponse save(
             @RequestParam(required = false)
