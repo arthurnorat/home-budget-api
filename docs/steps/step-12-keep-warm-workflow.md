@@ -1,5 +1,10 @@
 # Step 12 — Keep-warm: evitar o cold start sem estourar a cota do Neon
 
+> **Encerrado no [step-17](step-17-cutover.md).** Com os clientes no Cloud Run, o ping a cada 10 minutos para o
+> Render não tem mais função e só gastava a cota do Neon; o job do cron-job.org foi desativado. No Cloud Run o
+> cold start (cerca de 10 s) foi aceito, como explicado no [step-16](step-16-cloud-run-deploy.md). Este documento
+> continua valendo como o registro do incidente de cota e do raciocínio sobre o keep-warm.
+
 ## Objetivo
 Eliminar a demora de ~1 minuto na primeira requisição depois de um período sem uso, sem gastar
 a cota gratuita do banco. Este step conta o caminho completo: a primeira solução (ping a cada

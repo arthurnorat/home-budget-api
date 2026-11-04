@@ -117,6 +117,6 @@ endpoints começam em `/expenses` e `/income`.
 - A efetividade das políticas de limpeza: elas só agem depois de passar de 4 versões e de 1 dia.
 
 ## Conexão com o próximo passo
-O Firestore real está vazio e os dados de verdade continuam no Neon. O step-17 leva esses dados
-para o Firestore, preservando `expenseId` e `createdAt`. Depois, o step-18 troca a URL nos quatro clientes e desliga
-o Render e o Neon.
+O Firestore real está vazio e os clientes ainda apontam para o Render. Os dados antigos do Neon não serão migrados
+(ver o ADR do [step-17](step-17-cutover.md)): o step-17 troca a URL nos quatro clientes e mergeia a branch na `main`.
+O desligamento do Render e do Neon vem depois, em separado.

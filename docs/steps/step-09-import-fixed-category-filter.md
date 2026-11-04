@@ -2,8 +2,8 @@
 
 > **Removido no [step-15](step-15-remove-import-fixed.md).** A funcionalidade era pouco usada e foi retirada
 > antes da migração para o Cloud Run, para a API publicada ter um endpoint e um método de service a menos.
-> Este documento descreve como ela foi construída e continua valendo como estudo (a `main` ainda serve o
-> endpoint até a virada), mas o código atual não o tem mais.
+> Este documento descreve como ela foi construída e continua valendo como estudo (a `main` serviu o
+> endpoint até a virada, no [step-17](step-17-cutover.md)), mas o código atual não o tem mais.
 
 ## Objetivo
 Gastos fixos (aluguel, internet, mensalidades) se repetem todo mês. Em vez de recadastrá-los, este

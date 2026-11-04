@@ -1,5 +1,10 @@
 # Step 04 — Deploy em produção: Render + Neon
 
+> **Decisão revertida.** A hospedagem e o banco deste step foram substituídos por Cloud Run e Firestore (escolha
+> no [step-13](step-13-google-cloud-setup.md); virada dos clientes no [step-17](step-17-cutover.md)). O Render e o
+> Neon continuam como plano B por um tempo, sem deploy automático. Este documento segue valendo como estudo de
+> como a primeira produção foi montada.
+
 ## Objetivo
 Colocar a API no ar de forma contínua e sem custo: o backend Spring Boot roda no **Render**
 (dentro de um container Docker) e o banco PostgreSQL roda no **Neon**. Este step entrega três
