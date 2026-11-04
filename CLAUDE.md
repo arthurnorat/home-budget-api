@@ -66,19 +66,20 @@ Identificação por usuário poderá ser implementada no futuro.
 Além dos defaults do CLAUDE.md global, não há restrição adicional específica deste projeto no momento.
 
 ## Infrastructure
-- **Render** (backend) — `https://home-budget-api-wml2.onrender.com`
-- **Neon** (Postgres) — variáveis de ambiente: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`
-- `SPRING_PROFILES_ACTIVE=prod` — ativa `application-prod.properties`
+- **Cloud Run** (backend) — `https://home-budget-api-689350097433.southamerica-east1.run.app`, região `southamerica-east1`; variáveis de ambiente: `GOOGLE_CLOUD_PROJECT` (projeto do Firestore) e `JAVA_TOOL_OPTIONS` (`-XX:MaxRAMPercentage=75`); build pelos buildpacks (`project.toml`), ver [step-16](docs/steps/step-16-cloud-run-deploy.md)
+- **Firestore** (banco) — modo nativo, região `southamerica-east1`; coleções `expenses` e `monthly_income`
 - **Vercel** (frontend) — `https://home-budget-web-ten.vercel.app`
-- **cron-job.org** — ping externo de keep-warm (a cada 10 min), ver [step-12](docs/steps/step-12-keep-warm-workflow.md); fica ativo até a migração para Firestore + Cloud Run
+- **Render e Neon** (infraestrutura antiga) — ainda existem como plano B, mas fora de uso: o Auto-Deploy do Render está desligado. Serão apagados em passo futuro; variáveis do Neon: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`
+- **cron-job.org** — o job de keep-warm foi **desativado** (não apagado), ver [step-17](docs/steps/step-17-cutover.md)
 
 ## Status
-Passo atual: planejamento da migração para Firestore (banco) + Cloud Run (hospedagem), no Google Cloud.
-Alinhamento ao CLAUDE.md global: `docs/steps/` reescrito e `docs/adr/` removida. Pausado: a reescrita deste arquivo em inglês, a atualização do README e as limpezas de código ficam para depois da migração, porque dependem dela.
+Passo atual: step-17 concluído (virada). Os quatro clientes (web, Android, iOS, macOS) apontam para o Cloud Run; a branch `feat/firestore-persistence` foi mergeada na `main`. O Firestore começou vazio: os dados do Neon não foram migrados.
+Próximo: step-18 (documentação: este arquivo em inglês, README, correção do step-02) e, depois, a Fase 3 (autenticação, a partir do step-19). Pendente depois da janela de rollback: apagar o Render, o Neon e a branch, e ligar a proteção contra exclusão do Firestore.
+Alinhamento ao CLAUDE.md global: `docs/steps/` reescrito e `docs/adr/` removida. A reescrita deste arquivo em inglês e a atualização do README ficam para o step-18.
 Tarefas canceladas: liveness probe com Actuator, Postgres em servidor doméstico, monitoramento de cota do Neon e restrição do ping por horário (motivos no [step-12](docs/steps/step-12-keep-warm-workflow.md)).
 
-Backend completo e em produção no Render. Frontend em produção no Vercel.
-- Backend: `https://home-budget-api-wml2.onrender.com`
+Backend completo e em produção no Cloud Run, com o Firestore. Frontend em produção no Vercel.
+- Backend: `https://home-budget-api-689350097433.southamerica-east1.run.app`
 - Frontend: `https://home-budget-web-ten.vercel.app`
 
 ## Contrato da API
@@ -87,7 +88,7 @@ Este arquivo é a fonte de verdade da API. O frontend e os apps mobile importam 
 
 ### URLs
 - **Desenvolvimento:** `http://localhost:8080`
-- **Produção:** `https://home-budget-api-wml2.onrender.com`
+- **Produção:** `https://home-budget-api-689350097433.southamerica-east1.run.app`
 
 ### Endpoints
 
