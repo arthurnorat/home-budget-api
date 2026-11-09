@@ -90,6 +90,6 @@ reais**.
 - O Android grava dados reais mesmo em builds de desenvolvimento.
 
 ## Conexão com o próximo passo
-Com os clientes no Cloud Run, o step-18 atualiza a documentação que ainda descreve o Render e o Neon: o `CLAUDE.md`
-do projeto (em inglês), o README e a correção de steps antigos. Depois, a Fase 3 começa no step-19 com a
-autenticação, que fecha o maior risco listado acima.
+Com os clientes no Cloud Run, a documentação que ainda descrevia o Render e o Neon foi alinhada (`CLAUDE.md`,
+README e `step-02`), sem um step próprio. A Fase 3 começa no step-18 com a autenticação, que fecha o maior risco
+listado acima.

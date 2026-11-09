@@ -1,98 +1,67 @@
-# Orçamento — Contexto do Projeto
+# Home Budget API — Project Context
 
-## Objetivo
-Aplicativo de controle de gastos domésticos compartilhado entre dois usuários (um no iPhone, outro no Android — futuramente via app nativo Swift).
-
-## Perfil do Desenvolvedor
-- Estudante em transição de desenvolvimento mobile (Swift/iOS) para backend
-- Este projeto tem finalidade de aprendizado
-- Quando solicitado, explicações devem ser didáticas, detalhadas e com exemplos práticos
-- Conhecimentos prévios: Swift, Objective-C, iOS, Git, noções de Java
+## Goal
+REST API for a household expense tracker shared by two users. Clients: a web app (Angular), native apps for iPhone (Swift), Mac (Swift) and Android (Kotlin). The clients live in their own repositories.
 
 ## Stack
+- **Java 21 + Spring Boot 3.5** — REST API (Spring Web, Bean Validation)
+- **Firestore** (native mode) — database, accessed with the native `google-cloud-firestore` SDK
+- **Google Cloud Run** — hosting, built from source by Google buildpacks (`project.toml` pins Java 21)
+- **Firestore emulator** — local development
 
-### Backend
-- **Java + Spring Boot** — API REST
-- **PostgreSQL** — banco de dados relacional
-- **Render** — hospedagem do backend e do banco
+## Features
+- Create, list (by month), update and delete expenses: description, amount, date and category
+- Categories: `FIXED` or `VARIABLE` (more categories may be added later)
+- Monthly income: one amount per month
+- Data shared between the two users, with no authorship
 
-### Frontend Web
-- **Angular** — interface web para uso e testes
-- **Vercel** — hospedagem do frontend
+## Authentication
+None yet. The API is public (`--allow-unauthenticated` on Cloud Run) and meant for private use between two known users.
+Planned (Phase 3): Firebase Auth in the clients sending a bearer token, and Spring Security in the API validating it and allowing only the two known user ids.
 
-### App iOS (futuro)
-- **Swift** — app nativo para iPhone
+## Data model
+See the "Data model" section of `README.md` (Firestore collections `expenses` and `monthly_income`). It is internal to the API: clients only see the contract below.
 
-## Ordem de Construção
-1. Backend (Spring Boot + PostgreSQL)
-2. Frontend web (Angular) — para testar e usar o backend
-3. App iOS nativo (Swift)
-
-## MVP — Funcionalidades
-- Registrar gasto: descrição, valor, data e categoria
-- Categorias: Fixo ou Variável (novas categorias serão adicionadas no futuro)
-- Listar gastos do mês atual
-- Gastos compartilhados entre os dois usuários sem identificação de autoria
-
-## Autenticação
-Não há autenticação no MVP. O app é de uso privado entre dois usuários conhecidos.
-Identificação por usuário poderá ser implementada no futuro.
-
-## Modelo de Dados
-
-### Tabela: expenses
-- `expense_id` (PK) — UUID gerado automaticamente
-- `description` — descrição do gasto
-- `amount` — valor em centavos (integer), exibido como R$ 0,00
-- `date` — data no formato ISO 8601 (YYYY-MM-DD), exibida como DD/MM/YYYY
-- `category` — "fixed" ou "variable"
-- `created_at` — timestamp de criação
-
-## Convenções
-- Valores monetários armazenados em centavos (integer)
-- Datas armazenadas em ISO 8601, exibidas em DD/MM/YYYY
-- Todo o código em inglês: variáveis, nomes de classes/métodos e comentários
-- Commits em inglês
+## Conventions
+- Monetary values stored in cents (integer), displayed as R$ 0,00
+- Dates in ISO 8601 (`YYYY-MM-DD`), displayed as DD/MM/YYYY
+- All code in English: variables, class and method names, comments
+- Commits in English
 
 ## Architecture
-- Controllers (`ExpenseController`, `MonthlyIncomeController`) só lidam com HTTP: validam entrada, chamam os services e devolvem DTOs. Nunca contêm lógica de negócio.
-- Lógica de negócio vive só nos services (`ExpenseService`, `MonthlyIncomeService`).
-- Acesso a dados só via repositories (`ExpenseRepository`, `MonthlyIncomeRepository`), usando Spring Data JPA.
-- Entidades (`Expense`, `MonthlyIncome`) e DTOs (`expense/dto`, `income/dto`) ficam separados — os controllers nunca expõem entidades diretamente nas respostas.
-- Exceções de domínio (ex.: `ExpenseNotFoundException`) são mapeadas para respostas HTTP num único `GlobalExceptionHandler` (`@RestControllerAdvice`), em vez de tratadas em cada controller.
-- Pacotes organizados por feature (`expense`, `income`), não por camada, com um pacote `exception` compartilhado.
+- Controllers (`ExpenseController`, `MonthlyIncomeController`) only handle HTTP: validate input, call the services and return DTOs. They never contain business logic.
+- Business logic lives only in the services (`ExpenseService`, `MonthlyIncomeService`).
+- Data access only through the repositories (`ExpenseRepository`, `MonthlyIncomeRepository`), built on the Firestore SDK. `FirestoreSupport.await` turns SDK failures into `PersistenceException`.
+- Entities (`Expense`, `MonthlyIncome`) and DTOs (`expense/dto`, `income/dto`) are kept separate: controllers never expose entities in responses.
+- Domain exceptions (e.g. `ExpenseNotFoundException`, `PersistenceException`) are mapped to HTTP responses in a single `GlobalExceptionHandler` (`@RestControllerAdvice`), not handled in each controller.
+- Packages are organized by feature (`expense`, `income`), not by layer, with a shared `exception` package.
 
 ## Out of scope
-Além dos defaults do CLAUDE.md global, não há restrição adicional específica deste projeto no momento.
+Besides the defaults of the global CLAUDE.md, there is no extra project-specific restriction at the moment.
 
 ## Infrastructure
-- **Cloud Run** (backend) — `https://home-budget-api-689350097433.southamerica-east1.run.app`, região `southamerica-east1`; variáveis de ambiente: `GOOGLE_CLOUD_PROJECT` (projeto do Firestore) e `JAVA_TOOL_OPTIONS` (`-XX:MaxRAMPercentage=75`); build pelos buildpacks (`project.toml`), ver [step-16](docs/steps/step-16-cloud-run-deploy.md)
-- **Firestore** (banco) — modo nativo, região `southamerica-east1`; coleções `expenses` e `monthly_income`
-- **Vercel** (frontend) — `https://home-budget-web-ten.vercel.app`
-- **Render e Neon** (infraestrutura antiga) — ainda existem como plano B, mas fora de uso: o Auto-Deploy do Render está desligado. Serão apagados em passo futuro; variáveis do Neon: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`
-- **cron-job.org** — o job de keep-warm foi **desativado** (não apagado), ver [step-17](docs/steps/step-17-cutover.md)
+- **Cloud Run** (backend) — `https://home-budget-api-689350097433.southamerica-east1.run.app`, region `southamerica-east1`; environment variables: `GOOGLE_CLOUD_PROJECT` (Firestore project) and `JAVA_TOOL_OPTIONS` (`-XX:MaxRAMPercentage=75`); built by buildpacks (`project.toml`), see [step-16](docs/steps/step-16-cloud-run-deploy.md)
+- **Firestore** (database) — native mode, region `southamerica-east1`; collections `expenses` and `monthly_income`
+- **Vercel** (web frontend) — `https://home-budget-web-ten.vercel.app`
+- **Render and Neon** (old infrastructure) — still exist as a fallback but are out of use: Render's Auto-Deploy is off. To be deleted later; Neon variables: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`
+- **cron-job.org** — the keep-warm job was **disabled** (not deleted), see [step-17](docs/steps/step-17-cutover.md)
 
 ## Status
-Passo atual: step-17 concluído (virada). Os quatro clientes (web, Android, iOS, macOS) apontam para o Cloud Run; a branch `feat/firestore-persistence` foi mergeada na `main`. O Firestore começou vazio: os dados do Neon não foram migrados.
-Próximo: step-18 (documentação: este arquivo em inglês, README, correção do step-02) e, depois, a Fase 3 (autenticação, a partir do step-19). Pendente depois da janela de rollback: apagar o Render, o Neon e a branch, e ligar a proteção contra exclusão do Firestore.
-Alinhamento ao CLAUDE.md global: `docs/steps/` reescrito e `docs/adr/` removida. A reescrita deste arquivo em inglês e a atualização do README ficam para o step-18.
-Tarefas canceladas: liveness probe com Actuator, Postgres em servidor doméstico, monitoramento de cota do Neon e restrição do ping por horário (motivos no [step-12](docs/steps/step-12-keep-warm-workflow.md)).
+Current: step-17 done (cutover), with the documentation aligned to the Firestore + Cloud Run architecture. The four clients (web, Android, iOS, macOS) call Cloud Run; Firestore started empty, so the Neon data was not migrated.
+Next: Phase 3, authentication (step-18 onwards). Pending after the rollback window: delete Render and Neon (only after the decision on the end of the Google Cloud free trial) and turn on Firestore's delete protection.
+Cancelled: Actuator liveness probe, Postgres on a home server, Neon quota monitoring and time-based ping (reasons in [step-12](docs/steps/step-12-keep-warm-workflow.md)).
 
-Backend completo e em produção no Cloud Run, com o Firestore. Frontend em produção no Vercel.
-- Backend: `https://home-budget-api-689350097433.southamerica-east1.run.app`
-- Frontend: `https://home-budget-web-ten.vercel.app`
+## API Contract
 
-## Contrato da API
-
-Este arquivo é a fonte de verdade da API. O frontend e os apps mobile importam este CLAUDE.md via `@import` para ter acesso a este contrato sem duplicação.
+This file is the source of truth for the API. The web frontend and the native clients import this CLAUDE.md with `@import` to get this contract without duplication.
 
 ### URLs
-- **Desenvolvimento:** `http://localhost:8080`
-- **Produção:** `https://home-budget-api-689350097433.southamerica-east1.run.app`
+- **Development:** `http://localhost:8080`
+- **Production:** `https://home-budget-api-689350097433.southamerica-east1.run.app`
 
 ### Endpoints
 
-**POST /expenses** — Criar gasto (201)
+**POST /expenses** — Create an expense (201)
 ```json
 // Request
 { "description": "Supermercado", "amount": 15000, "date": "2026-04-25", "category": "VARIABLE" }
@@ -101,27 +70,27 @@ Este arquivo é a fonte de verdade da API. O frontend e os apps mobile importam 
 { "expenseId": "uuid", "description": "Supermercado", "amount": 15000, "date": "2026-04-25", "category": "VARIABLE", "createdAt": "2026-04-25T10:30:00Z" }
 ```
 
-**GET /expenses?month=yyyy-MM** — Listar gastos do mês (200)
+**GET /expenses?month=yyyy-MM** — List the month's expenses (200)
 ```json
-// Response — array de gastos no mesmo formato acima
+// Response — array of expenses in the same format as above
 ```
 
-**PUT /expenses/{id}** — Atualizar gasto (200)
+**PUT /expenses/{id}** — Update an expense (200)
 ```json
-// Request — mesmo formato do POST
-// Response — gasto atualizado no mesmo formato acima
+// Request — same format as POST
+// Response — the updated expense in the same format as above
 ```
 
-**DELETE /expenses/{id}** — Remover gasto (204, sem body)
+**DELETE /expenses/{id}** — Delete an expense (204, no body)
 
-**GET /income?month=yyyy-MM** — Buscar entrada do mês (200)
+**GET /income?month=yyyy-MM** — Get the month's income (200)
 ```json
 // Response
 { "month": "2026-06", "amount": 500000 }
-// Retorna amount=0 se nenhuma entrada foi registrada para o mês
+// Returns amount=0 if no income was registered for the month
 ```
 
-**PUT /income?month=yyyy-MM** — Salvar ou atualizar entrada do mês (200)
+**PUT /income?month=yyyy-MM** — Save or update the month's income (200)
 ```json
 // Request
 { "amount": 500000 }
@@ -129,20 +98,20 @@ Este arquivo é a fonte de verdade da API. O frontend e os apps mobile importam 
 { "month": "2026-06", "amount": 500000 }
 ```
 
-### Campos e tipos
-| Campo | Tipo | Observação |
-|-------|------|------------|
-| `expenseId` | UUID (string) | Gerado automaticamente |
-| `description` | string | Obrigatório, mínimo 1 caractere |
-| `amount` | integer | Em **centavos** (R$ 1,00 = 100) |
-| `date` | string ISO 8601 | Formato `YYYY-MM-DD` |
-| `category` | string enum | `"FIXED"` ou `"VARIABLE"` |
-| `createdAt` | string ISO 8601 | Timestamp UTC, gerado automaticamente |
+### Fields and types
+| Field | Type | Note |
+|-------|------|------|
+| `expenseId` | UUID (string) | Generated automatically |
+| `description` | string | Required, at least 1 character |
+| `amount` | integer | In **cents** (R$ 1,00 = 100) |
+| `date` | ISO 8601 string | Format `YYYY-MM-DD` |
+| `category` | string enum | `"FIXED"` or `"VARIABLE"` |
+| `createdAt` | ISO 8601 string | UTC timestamp, generated automatically |
 
 ### CORS
-Origens permitidas atualmente: `http://localhost:4200`, `https://home-budget-web-ten.vercel.app`
+Currently allowed origins: `http://localhost:4200`, `https://home-budget-web-ten.vercel.app`
 
-Para adicionar um app mobile: inserir a origem (ou scheme nativo, ex: `capacitor://localhost`) em `WebConfig.java`.
+Only browser clients need an allowed origin (add it in `WebConfig.java`). Native apps (iOS, macOS, Android) are not subject to CORS.
 
-### Autenticação
-Nenhuma no MVP. O app é de uso privado.
+### Authentication
+None yet. The API is public and meant for private use (see "Authentication" above).

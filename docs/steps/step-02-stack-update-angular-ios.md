@@ -1,5 +1,9 @@
 # Step 02 — Definição da stack dos clientes: Angular e Swift
 
+> **Decisão revisada.** Depois deste step o projeto ganhou um cliente Android em Kotlin e um cliente macOS em
+> Swift, então "só Swift, nenhum app para Android" deixou de valer. O raciocínio da época continua registrado
+> abaixo como estudo. O estado atual dos clientes está no `CLAUDE.md` e no `README.md`.
+
 ## Objetivo
 Reduzir o escopo do projeto antes de ele crescer. O plano inicial previa React na web, React Native
 para um app mobile único e apps nativos em Swift e Kotlin. Este step troca isso por **um cliente web
