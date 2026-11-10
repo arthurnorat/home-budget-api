@@ -1,5 +1,9 @@
 # Step 01 — Projeto Spring Boot e primeiros endpoints de gastos
 
+> **Persistência substituída no [step-14](step-14-firestore-persistence.md).** O H2, o JPA e o `JpaRepository`
+> descritos aqui deram lugar ao Firestore e ao emulador do Firestore. As camadas, os DTOs e o ADR abaixo (centavos e
+> ausência de autenticação) continuam valendo.
+
 ## Objetivo
 Criar o esqueleto do backend: um projeto Spring Boot com Maven que registra gastos
 (`POST /expenses`) e lista os gastos de um mês (`GET /expenses`), guardando-os num banco H2 em
@@ -98,29 +102,6 @@ o `ExpenseRepository` e o entrega ao `ExpenseService`.
 `application.properties` define o H2 em memória com `ddl-auto=create-drop` (cria as tabelas ao subir e as
 apaga ao parar), mostra o SQL no console e habilita o console do H2. `application-prod.properties`
 nasceu preparado para Postgres; o [step-03](step-03-postgres-cors-exception-handling.md) o ajusta.
-
-## Como verificar
-Suba a API: no IntelliJ, execute `HomeBudgetApplication`; na CLI:
-```bash
-./mvnw spring-boot:run
-```
-1. **Caminho feliz.** Crie e liste um gasto.
-   ```bash
-   curl -i -X POST http://localhost:8080/expenses \
-     -H "Content-Type: application/json" \
-     -d '{"description":"Supermercado","amount":15000,"date":"2026-10-05","category":"VARIABLE"}'
-   curl -i "http://localhost:8080/expenses?month=2026-10"
-   ```
-   Esperado: `201` com `expenseId` gerado e `createdAt` preenchido; depois `200` com o gasto no array.
-2. **Persistência.** Abra `http://localhost:8080/h2-console` (JDBC URL `jdbc:h2:mem:home-budget-api`, usuário
-   `sa`, senha vazia) e rode `SELECT * FROM expenses`. A linha existe com `category = 'VARIABLE'`.
-   Reiniciar a aplicação apaga tudo, o que é esperado no H2 em memória.
-3. **Estados limite.** `GET /expenses?month=2026-11` devolve `200` e `[]`. Um gasto em `2026-10-31` aparece
-   em outubro e não em novembro (limite do mês).
-4. **Caminho de erro.** Envie `amount` negativo ou `description` vazia: a resposta deve ser rejeitada.
-   (O formato da rejeição é tratado no [step-03](step-03-postgres-cors-exception-handling.md); aqui
-   ainda pode aparecer como erro `400` padrão do Spring.)
-5. **Regressão.** Não há funcionalidade anterior.
 
 ## Conexão com o próximo passo
 Com a base pronta, o [step-02](step-02-stack-update-angular-ios.md) fecha a decisão sobre os clientes

@@ -96,8 +96,8 @@ depois do último ping, a primeira consulta espera o Neon retomar (< 0,5 s).
 - **Monitorar o consumo de compute do Neon** e **restringir o ping ao horário de uso**: ações de
   apoio ao Neon, **canceladas** porque o Neon sai na migração.
 
-**Estado atual.** Render, Neon e o job de 10 min seguem ativos até a migração para Firestore + Cloud
-Run; quando ela acontecer, este ADR e o do step-04 serão revertidos num novo step, com link de volta.
+**Como terminou.** O keep-warm durou até a migração para Firestore + Cloud Run. Na virada
+([step-17](step-17-cutover.md)) o job de 10 min foi desativado (não apagado), e este ADR deixou de valer.
 
 ## Como o código funciona
 Este step não deixa código no repositório: o workflow do GitHub Actions foi removido e o ping vive
@@ -115,22 +115,6 @@ consulta real ao Postgres. É exatamente por isso que o ping acorda o Neon, e é
 frequência importar tanto.
 
 O workflow removido era um `cron` agendado que fazia esse mesmo GET a cada 5 minutos.
-
-## Como verificar
-1. **Caminho feliz.** O ping está funcionando: no painel do cron-job.org, o histórico do job
-   "Keep home-budget-api warm" deve mostrar execuções a cada 10 min com status `200`.
-2. **Persistência (da configuração).** Confirme no painel que o job está **ativo**, com a
-   expressão `*/10 * * * *` e notificação de falha ligada.
-3. **Estado limite.** Não use meses sem dados: o ping continua devolvendo `200` com `[]`.
-4. **Caminho de erro.** Se o Neon estiver pausado, o ping devolve `500` e o cron-job.org avisa
-   por notificação; confira o painel do Neon antes de investigar o código.
-5. **Regressão e efeito.**
-   ```bash
-   curl -s -o /dev/null -w "%{http_code} %{time_total}s\n" \
-     "https://home-budget-api-wml2.onrender.com/expenses?month=2026-10"
-   ```
-   Esperado: `200` em poucos segundos mesmo após longa inatividade do app. No painel do Neon,
-   o gráfico de compute deve mostrar períodos de suspensão entre os pings, e não uma linha contínua.
 
 ## Conexão com o próximo passo
 A atualização automática da lista no frontend (polling leve e atualização ao voltar o foco da aba)

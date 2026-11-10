@@ -50,37 +50,12 @@ Ao remover uma funcionalidade, procure o que existia **só por causa dela** (`sa
 junto; e o que outros ainda usam (`applyRequest`, `prepareForSave`) fica. Uma busca por `importFixed`,
 `import-fixed`, `saveAll` e `WriteBatch` depois da mudança confirma que não sobrou nada.
 
-## Como verificar
-Pré-requisitos: o emulador do Firestore rodando
-(`gcloud emulators firestore start --host-port=localhost:8086`) e a API subida com
-`FIRESTORE_EMULATOR_HOST=localhost:8086` e `GOOGLE_CLOUD_PROJECT=home-budget-api-arthur`. O que se verifica é que
-o endpoint sumiu *e* que nada do resto quebrou.
-
-| Camada | Chamada | Esperado |
-|---|---|---|
-| Compilação | `./mvnw -q clean package -DskipTests` | sem erros; nenhuma sobra de `importFixed`, `saveAll` ou `WriteBatch` |
-| Caminho feliz | `POST /expenses` válido; `GET /expenses?month=2026-12` | `201`; `200` com os gastos do mês |
-| Persistência | `PUT /expenses/{id}`; listar de novo | `200`, mesmo id e mesmo `createdAt`; a lista reflete a edição |
-| Estado limite | `GET /income?month=...` sem registro | `200` com `amount` 0; depois do `PUT`, o valor salvo |
-| Caminho de erro | `PUT`/`DELETE` com UUID inexistente; corpo inválido | `404`; `422` |
-| Apagar | `DELETE /expenses/{id}` duas vezes | `204`; depois `404` |
-| Endpoint removido | `POST /expenses/import-fixed?month=2026-12` | **`405`** com `Allow: PUT, DELETE` |
-| Banco fora do ar | parar o emulador e `GET /expenses?month=2026-10` | `503` com `"Data store unavailable"`; log com `Data store failure` |
-
-### Por que o endpoint removido responde `405` e não `404`
+### Quem ainda chama o endpoint removido recebe `405`, e não `404`
 O caminho `/expenses/import-fixed` casa com o padrão `/expenses/{id}`, que existe para `PUT` e `DELETE`. O Spring
 encontra o caminho, vê que o método `POST` não é aceito ali e responde `405 Method Not Allowed`, informando no
-cabeçalho `Allow` os métodos permitidos. Ele confere o método **antes** de tentar converter `import-fixed` em
+cabeçalho `Allow` os métodos permitidos (`Allow: PUT, DELETE`). Ele confere o método **antes** de tentar converter `import-fixed` em
 `UUID`; se fizesse o contrário, o resultado seria `400`. Um `405` aqui é o comportamento correto: o endpoint não
 existe mais.
-
-### O `503`, que não tinha sido verificado no step-14
-Com o emulador parado, a API respondeu `503` e a mensagem fixa, e o detalhe técnico ficou só no log, como
-planejado. A resposta veio em cerca de **0,3 segundo**, porque sem nenhum processo ouvindo na porta a conexão é
-recusada na hora. Um Firestore lento ou inalcançável por rede (cenário diferente) pode demorar mais, pois o SDK
-tenta de novo antes de desistir; esse caso **não foi medido**.
-
-Este step foi verificado rodando a aplicação contra o emulador local, sem tocar o Firestore real nem a conta Google.
 
 ## Conexão com o próximo passo
 Com o código final do contrato definido, o step-16 publica a aplicação no **Cloud Run**. Ele também troca o

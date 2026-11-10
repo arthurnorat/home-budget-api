@@ -18,9 +18,10 @@ longa em português com todo o contrato da API; depois uma versão bilíngue (in
 A versão longa do README repetia o contrato inteiro. A versão atual lista os endpoints e remete ao `CLAUDE.md`.
 
 ### Idioma
-README bilíngue, com um seletor de idioma no topo e as duas seções com o mesmo conteúdo. O histórico não
-registra o motivo da escolha; ela segue a regra de que o repositório é em inglês, mas o leitor principal
-(eu) estuda em português.
+README bilíngue, com um seletor de idioma no topo e as duas seções com o mesmo conteúdo. Isso concilia duas
+regras: o repositório é em inglês, mas o leitor principal (eu) estuda em português. Hoje é uma regra geral dos
+meus projetos, e não só deste: todo `README.md` segue esse formato, e uma mudança numa língua é sempre espelhada
+na outra.
 
 ### O arquivo para outras ferramentas de IA
 Neste período existiu um `AGENTS.md`, criado para o Codex, que repetia o contexto do projeto e as regras
@@ -33,18 +34,6 @@ Este step não altera código, só `README.md`. A estrutura atual:
 2. Em cada língua: descrição, demo em produção, funcionalidades, stack, arquitetura, modelo de dados, lista
    de endpoints, convenções.
 3. Regra do projeto: qualquer alteração em uma língua é espelhada na outra.
-
-## Como verificar
-1. **Caminho feliz.** Abra o `README.md` no GitHub ou no preview do IntelliJ e clique nos dois links do seletor
-   de idioma: cada um leva à sua seção.
-2. **Persistência.** Confira que o arquivo está no repositório na `main`.
-3. **Estados limite.** As duas línguas têm as mesmas seções e os mesmos endpoints, na mesma ordem.
-4. **Caminho de erro.** Os links de demonstração abrem (frontend e API):
-   ```bash
-   curl -s -o /dev/null -w "%{http_code}\n" "https://home-budget-api-wml2.onrender.com/expenses?month=2026-10"
-   ```
-   Esperado: `200`.
-5. **Regressão.** A lista de endpoints bate com o contrato do `CLAUDE.md`.
 
 ## Conexão com o próximo passo
 Com a documentação em dia, o [step-12](step-12-keep-warm-workflow.md) trata da hibernação dos planos gratuitos.

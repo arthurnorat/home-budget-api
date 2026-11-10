@@ -36,6 +36,9 @@ build/
 
 ### Secrets ###
 .env*
+*.pem
+*.p12
+*.key
 
 ### Claude Code worktrees ###
 .claude/worktrees/

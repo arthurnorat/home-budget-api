@@ -51,14 +51,6 @@ hospedado no Vercel e app nativo em Swift. React, React Native e Kotlin saem do 
 Nenhum arquivo de código muda. O que muda é o `CLAUDE.md`: o objetivo passa a falar em "app nativo
 Swift" e as seções de stack e de ordem de construção refletem as três etapas acima.
 
-## Como verificar
-Como não há código, a verificação é de coerência:
-1. **Caminho feliz.** Abra o `CLAUDE.md` do projeto e confirme que a stack cita Angular e Swift e não cita
-   React, React Native nem Kotlin.
-2. **Persistência.** A decisão está registrada no repositório, não só na conversa.
-3. **Estados limite, erro e regressão.** Não se aplicam: a API continua igual. Rode a API ([step-01](step-01-spring-boot-initial-setup.md))
-   se quiser ter certeza de que nada quebrou.
-
 ## Conexão com o próximo passo
 Sabendo que o cliente principal será uma página Angular rodando em outro endereço (`localhost:4200`), o
 [step-03](step-03-postgres-cors-exception-handling.md) libera o CORS para ele e prepara o banco de produção.

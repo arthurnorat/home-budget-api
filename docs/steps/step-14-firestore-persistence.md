@@ -41,6 +41,11 @@ As chamadas do SDK podem falhar com `ExecutionException` ou `InterruptedExceptio
 `GlobalExceptionHandler` responde com `503` e uma mensagem fixa. O detalhe técnico vai só para o log, para não
 expor informação interna ao cliente.
 
+Quanto tempo o cliente espera por esse `503` depende de como o banco falha. Com o emulador parado, a resposta veio
+em cerca de **0,3 segundo**: sem nenhum processo ouvindo na porta, a conexão é recusada na hora. Um Firestore lento
+ou inalcançável pela rede é um cenário diferente e pode demorar mais, porque o SDK tenta de novo antes de desistir;
+esse caso **não foi medido**.
+
 ### Desenvolvimento local
 O banco em memória deu lugar ao **emulador do Firestore**, que roda num processo separado. Ele é gratuito, não
 toca no banco real e também perde os dados ao parar. A alternativa seria um projeto Google só para
@@ -134,30 +139,6 @@ O mês é o caminho do documento (`monthly_income/2026-10`). `findById` lê o do
   ficou com o que é compartilhado (`GlobalExceptionHandler` e `PersistenceException`).
 - `application.properties` ficou só com o nome da aplicação; o `application-prod.properties` e o teste gerado pelo
   Initializr foram apagados; saíram os comentários que só explicavam Java ou Spring.
-
-## Como verificar
-Pré-requisitos: o emulador rodando (`gcloud emulators firestore start --host-port=localhost:8086`) e a API subida com
-as variáveis `FIRESTORE_EMULATOR_HOST=localhost:8086` e `GOOGLE_CLOUD_PROJECT=home-budget-api-arthur`.
-
-| Caso | Chamada | Esperado |
-|---|---|---|
-| Criar | `POST /expenses` válido | `201`, UUID novo, `createdAt` com microssegundos |
-| Listar o mês | `GET /expenses?month=2026-10` | `200`, só gastos do mês, data decrescente; dia 1 do mês seguinte fica de fora |
-| Sem `month` | `GET /expenses` | lista o mês atual |
-| Atualizar | `PUT /expenses/{id}` | `200`, mesmo id e mesmo `createdAt`, sem duplicata |
-| Entrada inválida | descrição vazia ou valor negativo | `422` com os campos em `errors` |
-| Id inexistente | `PUT` ou `DELETE` | `404` |
-| Apagar | `DELETE /expenses/{id}` | `204`; repetido, `404` |
-| Importar fixos *(removido no [step-15](step-15-remove-import-fixed.md))* | `POST /expenses/import-fixed?month=2026-12` | `201`, só `FIXED`, data `2026-12-01`, ids novos |
-| Virada de ano *(removido)* | `import-fixed?month=2027-01` | busca em dezembro de 2026 |
-| Mês anterior vazio *(removido)* | `import-fixed` | `201` e `[]` |
-| Entrada mensal | `GET /income` sem registro; `PUT` duas vezes | `amount` 0; depois o último valor, sem duplicar |
-| Entrada inválida | `amount` negativo; `month=outubro` | `422`; `400` |
-| Persistência | reiniciar a API | dados mantidos (ficam no emulador); parar o emulador apaga tudo |
-
-Não verificado neste step: a resposta `503` com o Firestore fora do ar (verificada no
-[step-15](step-15-remove-import-fixed.md)) e a construção da imagem de execução, que será feita na nuvem no
-step-16, pelos buildpacks do Google.
 
 ## Conexão com o próximo passo
 Com a API funcionando sobre o Firestore, o [step-15](step-15-remove-import-fixed.md) retira o `import-fixed`, para

@@ -56,18 +56,5 @@ Fora do código:
 - **Resíduo.** O commit do pacote também registrou por engano uma cópia do projeto sob
   `.claude/worktrees/`, que foi removida depois. O `.gitignore` agora ignora essa pasta.
 
-## Como verificar
-1. **Caminho feliz.** Compile e suba:
-   ```bash
-   ./mvnw clean package -DskipTests
-   ./mvnw spring-boot:run
-   ```
-   Esperado: `BUILD SUCCESS` e a aplicação sobe na porta 8080. No IntelliJ: Run em `HomeBudgetApplication`.
-2. **Persistência.** Crie e liste um gasto (ver [step-01](step-01-spring-boot-initial-setup.md)).
-3. **Estados limite.** `grep -r "orcamento" src pom.xml` não deve achar nada além de histórico em comentários
-   (se achar, é resíduo a corrigir).
-4. **Caminho de erro.** Um import esquecido apareceria como erro de compilação (`package com.orcamento… does not exist`).
-5. **Regressão.** `DELETE` com UUID inexistente ainda responde `404` ([step-05](step-05-delete-expense-endpoint.md)).
-
 ## Conexão com o próximo passo
 Com o nome estável, o [step-08](step-08-put-expense-editing.md) adiciona a edição de gastos.

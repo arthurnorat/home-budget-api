@@ -61,6 +61,8 @@ navegador ou celular; a API acessa pelo servidor, com a identidade da conta de s
   Cloud Run ([step-16](step-16-cloud-run-deploy.md)) e de manter `min-instances=0`.
 - Reverter custa: trocar de banco exige reescrever os repositories e mover os dados; trocar de hospedagem exige só
   reconfigurar a publicação, porque uma imagem de contêiner é portátil.
+- Esta decisão substitui o ADR do [step-03](step-03-postgres-cors-exception-handling.md) (Postgres em produção e H2
+  local) e o do [step-04](step-04-render-neon-deploy-migration.md) (Render e Neon).
 
 ## O que foi construído
 

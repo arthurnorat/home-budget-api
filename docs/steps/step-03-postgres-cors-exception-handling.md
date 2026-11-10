@@ -1,5 +1,9 @@
 # Step 03 — Postgres em produção, CORS e tratamento de erros de validação
 
+> **Decisão revertida.** O ADR deste step (Postgres em produção e H2 local) foi substituído pelo Firestore, com o
+> emulador no desenvolvimento local (escolha no [step-13](step-13-google-cloud-setup.md); código no
+> [step-14](step-14-firestore-persistence.md)). O CORS e o `GlobalExceptionHandler` continuam valendo.
+
 ## Objetivo
 Preparar a API para conversar com o mundo real: separar a configuração de desenvolvimento (H2) da de
 produção (Postgres), liberar o navegador do frontend Angular a chamar a API (CORS) e devolver erros de
@@ -96,25 +100,6 @@ O CORS é aplicado pelo **navegador**: `curl` e apps nativos não são afetados.
 
 ### `application-prod.properties`
 Monta a URL JDBC com as variáveis `PG*`, define o driver, usa `ddl-auto=update`, desliga o console do H2 e o log de SQL.
-
-## Como verificar
-1. **Caminho feliz.** Suba a API (`./mvnw spring-boot:run` ou Run no IntelliJ) e crie um gasto válido
-   (ver [step-01](step-01-spring-boot-initial-setup.md)). Esperado: `201`.
-2. **Persistência.** Em produção (perfil `prod`), os dados sobrevivem a um reinício; localmente, não.
-3. **Estados limite.** Envie um corpo com vários campos inválidos de uma vez:
-   ```bash
-   curl -i -X POST http://localhost:8080/expenses \
-     -H "Content-Type: application/json" \
-     -d '{"description":"","amount":-5,"date":"2026-10-05","category":"FIXED"}'
-   ```
-   Esperado: `422` e `errors` listando `description` e `amount`.
-4. **Caminho de erro / CORS.** Simule o navegador enviando o cabeçalho `Origin`:
-   ```bash
-   curl -i http://localhost:8080/expenses?month=2026-10 -H "Origin: http://localhost:4200"
-   curl -i http://localhost:8080/expenses?month=2026-10 -H "Origin: http://site-nao-autorizado.com"
-   ```
-   O primeiro deve trazer `Access-Control-Allow-Origin: http://localhost:4200`; o segundo, `403 Invalid CORS request`.
-5. **Regressão.** `GET /expenses` continua `200`.
 
 ## Conexão com o próximo passo
 Com o perfil de produção definido, o [step-04](step-04-render-neon-deploy-migration.md) escolhe onde API e

@@ -47,7 +47,7 @@ Besides the defaults of the global CLAUDE.md, there is no extra project-specific
 - **cron-job.org** — the keep-warm job was **disabled** (not deleted), see [step-17](docs/steps/step-17-cutover.md)
 
 ## Status
-Current: step-17 done (cutover), with the documentation aligned to the Firestore + Cloud Run architecture. The four clients (web, Android, iOS, macOS) call Cloud Run; Firestore started empty, so the Neon data was not migrated.
+Current: step-17 done (cutover), with the documentation aligned to the Firestore + Cloud Run architecture and the step documents aligned to the global rules (verification is delivered in the chat, not in `docs/steps/`). The four clients (web, Android, iOS, macOS) call Cloud Run; Firestore started empty, so the Neon data was not migrated.
 Next: Phase 3, authentication (step-18 onwards). Pending after the rollback window: delete Render and Neon (only after the decision on the end of the Google Cloud free trial) and turn on Firestore's delete protection.
 Cancelled: Actuator liveness probe, Postgres on a home server, Neon quota monitoring and time-based ping (reasons in [step-12](docs/steps/step-12-keep-warm-workflow.md)).
 

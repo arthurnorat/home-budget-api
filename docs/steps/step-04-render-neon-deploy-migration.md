@@ -91,26 +91,6 @@ spring.datasource.password=${PGPASSWORD}
 quando o perfil `prod` está ativo (`SPRING_PROFILES_ACTIVE=prod` no Render); localmente vale o
 `application.properties`, que usa o H2 em memória.
 
-## Como verificar
-Os comandos usam a produção real; apague qualquer gasto de teste ao final.
-
-1. **Caminho feliz.** O que se verifica: a API sobe no Render e fala com o Neon.
-   ```bash
-   curl -i "https://home-budget-api-wml2.onrender.com/expenses?month=2026-10"
-   ```
-   Esperado: `200` e um array JSON. Se a API estava hibernada, a primeira resposta demora até ~1 min.
-2. **Persistência.** Crie um gasto, reinicie o serviço pelo painel do Render e liste de novo.
-   ```bash
-   curl -i -X POST "https://home-budget-api-wml2.onrender.com/expenses" \
-     -H "Content-Type: application/json" \
-     -d '{"description":"Teste deploy","amount":100,"date":"2026-10-01","category":"VARIABLE"}'
-   ```
-   Esperado: `201`; após o reinício, o gasto continua na listagem (dados estão no Neon, não no container).
-3. **Estado limite.** `GET /expenses?month=2020-01` (mês sem dados) deve devolver `200` e `[]`.
-4. **Caminho de erro.** `curl -i -X DELETE ".../expenses/00000000-0000-0000-0000-000000000000"` deve
-   devolver `404`. Um `500` indicaria falha de conexão com o banco (variáveis `PG*` erradas ou SSL).
-5. **Regressão.** Abra `https://home-budget-web-ten.vercel.app` e confirme que lista e cria gastos.
-
 ## Conexão com o próximo passo
 Com a API em produção, os próximos steps adicionam endpoints (DELETE, PUT, importação de fixos,
 entrada mensal) e o [step-12](step-12-keep-warm-workflow.md) trata da hibernação dos planos gratuitos.

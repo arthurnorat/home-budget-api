@@ -88,33 +88,22 @@ value = "21"
 O código da API não mudou neste step: o Cloud Run espera, por padrão, que o contêiner escute na porta 8080, que
 é também a porta padrão do Spring Boot (o log confirma `Tomcat started on port 8080`).
 
-## Como verificar
-Verificado na URL do Cloud Run, com o Firestore real. Os dados de teste usaram datas de 2099 e foram apagados no
-fim (a entrada mensal de teste, que a API não consegue apagar, foi removida pelo console do Firestore).
+A JVM lê a variável `JAVA_TOOL_OPTIONS` sozinha, ao iniciar, e avisa no log que a aplicou:
+`Picked up JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=75`. É assim que dá para conferir que a configuração do serviço
+chegou até o Java, sem mudar nada no código.
 
-| Camada | Caso | Resultado |
-|---|---|---|
-| Caminho feliz | `POST /expenses` duas vezes; `GET /expenses?month=2099-01` | `201`; `200` só com os gastos do mês, data decrescente; o do dia 1 do mês seguinte fica de fora |
-| Persistência | `PUT /expenses/{id}` e nova listagem | `200`, mesmo id e mesmo `createdAt` |
-| Estado limite | `GET /expenses` sem `month`; `GET /income` sem registro | `200` com `[]`; `200` com `amount` 0 |
-| Entrada mensal | `PUT /income` duas vezes | `200`, o último valor, sem duplicar |
-| Caminho de erro | `PUT`/`DELETE` com UUID inexistente; corpo inválido; `month=outubro`; `amount` negativo | `404`; `422`; `400`; `422` |
-| Regressão | `POST /expenses/import-fixed` | `405` com `Allow: PUT, DELETE` |
-| CORS | `OPTIONS` com a origem do Vercel; com outra origem | `200` com `access-control-allow-origin`; `403` |
-| Limpeza | `DELETE` dos gastos de teste; listas vazias | `204`; `[]` |
+Abrir a URL raiz no navegador mostra a página "Whitelabel Error Page" com `404`. Isso não é uma falha do deploy: a
+API não tem rota em `/`, e essa é a página de erro padrão do Spring Boot. Os endpoints começam em `/expenses` e
+`/income`.
 
-Nos logs do serviço: Java 21.0.12.1, `Picked up JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=75` (única linha, sem opções
-extras dos buildpacks) e nenhum aviso ou erro.
-
-Abrir a URL raiz no navegador mostra a página "Whitelabel Error Page" com `404`: a API não tem rota em `/`. Os
-endpoints começam em `/expenses` e `/income`.
-
-**Não verificado:**
-- A resposta `503` com o Firestore fora do ar, no Cloud Run (só no emulador, no [step-15](step-15-remove-import-fixed.md)).
-- O comportamento sob carga e se 512 MiB bastam nela.
-- A cota gratuita do Cloud Run em `southamerica-east1`, que não foi confirmada: olhar o relatório de faturamento
-  nas primeiras semanas.
-- A efetividade das políticas de limpeza: elas só agem depois de passar de 4 versões e de 1 dia.
+## Riscos e dívida técnica
+- **Firestore fora do ar no Cloud Run:** o `503` foi observado só com o emulador local
+  ([step-14](step-14-firestore-persistence.md)), não no serviço publicado.
+- **Carga:** o comportamento sob carga não foi medido, nem se 512 MiB bastam nela.
+- **Cota gratuita:** a cota do Cloud Run em `southamerica-east1` não foi confirmada; o relatório de faturamento das
+  primeiras semanas é que vai mostrar o custo real.
+- **Limpeza de imagens:** as políticas só agem depois de passar de 4 versões e de 1 dia, então a efetividade delas
+  ainda não foi observada.
 
 ## Conexão com o próximo passo
 O Firestore real está vazio e os clientes ainda apontam para o Render. Os dados antigos do Neon não serão migrados

@@ -57,26 +57,6 @@ public Map<String, Object> handleNotFound(ExpenseNotFoundException ex) {
 define o `204`. No `WebConfig`, `"DELETE"` entrou na lista de métodos permitidos; sem isso o navegador
 bloquearia a chamada do frontend ([step-03](step-03-postgres-cors-exception-handling.md)).
 
-## Como verificar
-Suba a API localmente (`./mvnw spring-boot:run` ou Run no IntelliJ).
-1. **Caminho feliz.** Crie um gasto, copie o `expenseId` da resposta e apague:
-   ```bash
-   curl -i -X POST http://localhost:8080/expenses -H "Content-Type: application/json" \
-     -d '{"description":"Teste","amount":1000,"date":"2026-10-05","category":"VARIABLE"}'
-   curl -i -X DELETE http://localhost:8080/expenses/<expenseId-copiado>
-   ```
-   Esperado: `204`, sem corpo.
-2. **Persistência.** `curl "http://localhost:8080/expenses?month=2026-10"` não deve mais listar o gasto
-   (ou `SELECT * FROM expenses` no console do H2 em `http://localhost:8080/h2-console`).
-3. **Estados limite.** Apagar o único gasto deixa a listagem do mês como `[]`.
-4. **Caminho de erro.** Repetir o mesmo `DELETE`, ou usar um UUID qualquer:
-   ```bash
-   curl -i -X DELETE http://localhost:8080/expenses/00000000-0000-0000-0000-000000000000
-   ```
-   Esperado: `404` com `{"status":404,"error":"Expense not found: 0000..."}`. Um `500` indicaria que o
-   handler não foi registrado. Um id que não é UUID (`/expenses/abc`) gera `400`.
-5. **Regressão.** `POST` e `GET /expenses` continuam funcionando.
-
 ## Conexão com o próximo passo
 O frontend já pode apagar gastos, mas está num domínio novo; o [step-06](step-06-cors-vercel-production.md)
 libera a origem de produção do Vercel. O mesmo padrão de `404` será reaproveitado pelo `PUT` do

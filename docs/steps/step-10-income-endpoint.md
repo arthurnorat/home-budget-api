@@ -1,5 +1,9 @@
 # Step 10 — Entrada mensal: `GET` e `PUT /income`
 
+> **Persistência substituída no [step-14](step-14-firestore-persistence.md).** A entidade JPA e o `JpaRepository`
+> mostrados aqui deram lugar a um documento do Firestore cujo id é o mês. As decisões sobre o contrato (o mês como
+> identidade, `PUT` que cria ou atualiza, `amount` 0 para mês sem registro) continuam valendo.
+
 ## Objetivo
 Registrar quanto dinheiro entra em cada mês, para que os clientes possam comparar entrada e gastos.
 São dois endpoints: `GET /income?month=yyyy-MM` consulta o valor do mês e `PUT /income?month=yyyy-MM`
@@ -73,26 +77,6 @@ os dois casos: encontrado (vira `UPDATE`) ou novo (vira `INSERT`).
 ### `MonthlyIncomeController`
 O parâmetro `month` é opcional nos dois métodos e cai para `YearMonth.now()`. `IncomeRequest` e
 `IncomeResponse` são `record`s, separados da entidade como em `expense`.
-
-## Como verificar
-Suba a API; o H2 começa vazio.
-1. **Caminho feliz.**
-   ```bash
-   curl -i -X PUT "http://localhost:8080/income?month=2026-10" -H "Content-Type: application/json" -d '{"amount":500000}'
-   curl -i "http://localhost:8080/income?month=2026-10"
-   ```
-   Esperado: `200` com `{"month":"2026-10","amount":500000}` nas duas.
-2. **Persistência.** `SELECT * FROM monthly_income` no console do H2 (`http://localhost:8080/h2-console`) mostra uma linha.
-   Um segundo `PUT` com outro valor **altera** a linha, não cria outra.
-3. **Estados limite.** `GET /income?month=2026-11` (nunca salvo) devolve `200` com `amount` `0`.
-   `PUT` com `{"amount":0}` é aceito.
-4. **Caminho de erro.**
-   ```bash
-   curl -i -X PUT "http://localhost:8080/income?month=2026-10" -H "Content-Type: application/json" -d '{"amount":-1}'
-   curl -i "http://localhost:8080/income?month=outubro"
-   ```
-   Esperado: `422` com `errors` no primeiro e `400` no segundo.
-5. **Regressão.** Os endpoints de `/expenses` continuam funcionando.
 
 ## Conexão com o próximo passo
 O backend cobre o MVP e mais: gastos, importação de fixos e entrada mensal. O [step-11](step-11-readme-update.md)

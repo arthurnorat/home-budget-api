@@ -68,30 +68,6 @@ public List<ExpenseResponse> importFixed(YearMonth month) {
 `@PostMapping("/import-fixed")` com `month` **obrigatório** (`@RequestParam`, sem `required = false`) e
 `@ResponseStatus(CREATED)`: `201`, porque a chamada cria recursos novos.
 
-## Como verificar
-Suba a API; o H2 começa vazio.
-1. **Caminho feliz.** Crie dois fixos e um variável em outubro, depois importe para novembro:
-   ```bash
-   curl -s -X POST http://localhost:8080/expenses -H "Content-Type: application/json" \
-     -d '{"description":"Aluguel","amount":150000,"date":"2026-10-05","category":"FIXED"}'
-   curl -s -X POST http://localhost:8080/expenses -H "Content-Type: application/json" \
-     -d '{"description":"Internet","amount":10000,"date":"2026-10-10","category":"FIXED"}'
-   curl -s -X POST http://localhost:8080/expenses -H "Content-Type: application/json" \
-     -d '{"description":"Mercado","amount":30000,"date":"2026-10-12","category":"VARIABLE"}'
-   curl -i -X POST "http://localhost:8080/expenses/import-fixed?month=2026-11"
-   ```
-   Esperado: `201` com um array de **2** gastos (Aluguel e Internet), ambos `FIXED` e com `date` `2026-11-01`.
-2. **Persistência.** `GET /expenses?month=2026-11` lista os dois; `GET ...?month=2026-10` continua com os três originais.
-3. **Estados limite.** Importar para um mês cujo anterior não tem fixos devolve `201` e `[]`. Importar para
-   `2027-01` busca em `2026-12`. Importar duas vezes duplica (limitação conhecida).
-4. **Caminho de erro.** Sem `month` ou com formato inválido:
-   ```bash
-   curl -i -X POST "http://localhost:8080/expenses/import-fixed"
-   curl -i -X POST "http://localhost:8080/expenses/import-fixed?month=novembro"
-   ```
-   Esperado: `400` nos dois casos.
-5. **Regressão.** `POST`, `GET`, `PUT` e `DELETE` continuam como antes.
-
 ## Conexão com o próximo passo
 Falta registrar quanto entra por mês para comparar com os gastos: o [step-10](step-10-income-endpoint.md)
 cria o endpoint de entrada mensal.

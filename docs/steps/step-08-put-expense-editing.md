@@ -53,24 +53,6 @@ public ExpenseResponse update(UUID id, ExpenseRequest request) {
 ### CORS
 `"PUT"` entrou em `allowedMethods` no `WebConfig`; sem isso o navegador bloquearia a edição.
 
-## Como verificar
-Suba a API (`./mvnw spring-boot:run` ou Run no IntelliJ).
-1. **Caminho feliz.** Crie um gasto, copie o `expenseId` e altere:
-   ```bash
-   curl -i -X PUT http://localhost:8080/expenses/<expenseId> -H "Content-Type: application/json" \
-     -d '{"description":"Supermercado (corrigido)","amount":18000,"date":"2026-10-06","category":"FIXED"}'
-   ```
-   Esperado: `200` com os campos novos, o mesmo `expenseId` e o `createdAt` original.
-2. **Persistência.** `GET /expenses?month=2026-10` mostra o gasto com os valores novos e sem duplicata.
-3. **Estados limite.** Mudar a `date` para outro mês faz o gasto sair da listagem do mês anterior e entrar na do novo.
-4. **Caminho de erro.** UUID inexistente → `404`; `amount` negativo ou `description` vazia → `422` com `errors`:
-   ```bash
-   curl -i -X PUT http://localhost:8080/expenses/00000000-0000-0000-0000-000000000000 \
-     -H "Content-Type: application/json" \
-     -d '{"description":"x","amount":100,"date":"2026-10-06","category":"FIXED"}'
-   ```
-5. **Regressão.** `POST`, `GET` e `DELETE` continuam como antes.
-
 ## Conexão com o próximo passo
 Com criar, listar, editar e apagar prontos, o [step-09](step-09-import-fixed-category-filter.md) acrescenta uma
 operação de negócio: importar os gastos fixos do mês anterior.

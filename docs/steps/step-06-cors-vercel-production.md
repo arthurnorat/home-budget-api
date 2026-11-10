@@ -33,19 +33,6 @@ camada de proteção barata.
 - Mudar a lista exige novo deploy no Render, que acontece automaticamente a cada push na `main`
   ([step-04](step-04-render-neon-deploy-migration.md)).
 
-## Como verificar
-1. **Caminho feliz.** Abra `https://home-budget-web-ten.vercel.app`: a lista de gastos carrega. No console
-   do navegador (F12) não aparecem erros de CORS.
-2. **Persistência.** Crie um gasto no site e recarregue a página; ele continua lá.
-3. **Estados limite.** Mês sem gastos: a tela mostra a lista vazia, sem erro.
-4. **Caminho de erro.** Simule uma origem não autorizada:
-   ```bash
-   curl -i "https://home-budget-api-wml2.onrender.com/expenses?month=2026-10" -H "Origin: https://exemplo.com"
-   ```
-   Esperado: `403 Invalid CORS request`. Com `-H "Origin: https://home-budget-web-ten.vercel.app"`: `200` e
-   o cabeçalho `Access-Control-Allow-Origin`.
-5. **Regressão.** `localhost:4200` continua autorizado (rode o frontend local, se quiser conferir).
-
 ## Conexão com o próximo passo
 Com o frontend publicado e conversando com a API, as próximas mudanças são funcionalidades: renomear o
 projeto ([step-07](step-07-project-rename.md)) e depois editar gastos ([step-08](step-08-put-expense-editing.md)).
